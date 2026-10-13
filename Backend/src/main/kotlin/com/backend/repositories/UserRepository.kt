@@ -1,7 +1,10 @@
 package com.backend.repositories
 
 import com.backend.models.entities.User
+import com.backend.models.projections.UserAuthProjection
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.Optional
 import java.util.UUID
@@ -16,4 +19,7 @@ interface UserRepository : JpaRepository<User, UUID> {
     fun existsByEmail(email: String): Boolean
 
     fun existsByUsername(username: String): Boolean
+
+    @Query("SELECT u.accountStatus AS accountStatus, u.role AS role FROM User u WHERE u.id = :id")
+    fun findAuthViewById(@Param("id") id: UUID): UserAuthProjection?
 }

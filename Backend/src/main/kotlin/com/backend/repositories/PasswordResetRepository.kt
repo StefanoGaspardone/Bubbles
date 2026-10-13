@@ -10,4 +10,6 @@ import java.util.UUID
 interface PasswordResetRepository: JpaRepository<PasswordReset, UUID> {
 
     fun findByUserId(userId: UUID): Optional<PasswordReset>
+
+    fun deleteByUserId(userId: UUID): Long
 }

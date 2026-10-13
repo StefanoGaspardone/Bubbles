@@ -35,3 +35,13 @@ class RefreshTokenNotFoundException: RuntimeException(INVALID_SESSION_MESSAGE)
 class RefreshTokenExpiredOrRevokedException: RuntimeException(INVALID_SESSION_MESSAGE)
 
 class RefreshTokenReuseDetectedException: RuntimeException(INVALID_SESSION_MESSAGE)
+
+class AuthenticationRequiredException: RuntimeException("Authentication required")
+
+class AccessTokenExpiredException: RuntimeException("Access token expired")
+
+class InvalidAccessTokenException: RuntimeException("Invalid access token")
+
+class UserNotFoundException(val userId: UUID): RuntimeException("User not found")
+
+class IncorrectPasswordException: RuntimeException("Incorrect password")

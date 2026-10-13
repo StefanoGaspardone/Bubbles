@@ -1,14 +1,13 @@
 package com.backend.security
 
-import io.jsonwebtoken.JwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
+import com.backend.models.enums.AccountStatus
+import com.backend.repositories.UserRepository
+import com.backend.services.AccessTokenParseResult
+import com.backend.services.JwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -18,48 +17,53 @@ import java.util.UUID
 
 @Component
 class JwtAuthFilter(
-    @Value($$"${jwt.secret}") private val jwtSecret: String,
+    private val jwtService: JwtService,
+    private val userRepository: UserRepository,
 ): OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(javaClass)
-    private val key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val token = extractToken(request)
 
-        if(token == null) {
-            filterChain.doFilter(request, response)
-            return
-        }
-
-        try {
-            val claims = Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .payload
-
-            val role = claims["role"] as? String
-            if(role != "USER" && role != "ADMIN") {
-                filterChain.doFilter(request, response)
-                return
-            }
-
-            val userId = UUID.fromString(claims.subject)
-            val principal = JwtUserPrincipal(userId = userId, role = role)
-            val authorities = listOf(SimpleGrantedAuthority("ROLE_$role"))
-
-            SecurityContextHolder.getContext().authentication =
-                UsernamePasswordAuthenticationToken(principal, null, authorities)
-
-            log.debug("\n\t[DEBUG] [jwt_auth_filter][do_filter_internal] Authenticated user {} with role {}", userId, role)
-        } catch(e: JwtException) {
-            log.warn("\n\t[WARN] [jwt_auth_filter][do_filter_internal] Invalid token: {}", e.message)
-        } catch(_: IllegalArgumentException) {
-            log.warn("\n\t[WARN] [jwt_auth_filter][do_filter_internal] Malformed user id in token subject")
+        if(token != null) {
+            authenticate(token)?.let { request.setAttribute(AUTH_ERROR_ATTRIBUTE, it) }
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    private fun authenticate(token: String): AuthErrorReason? {
+        val userId: UUID = when(val result = jwtService.parseAccessToken(token)) {
+            is AccessTokenParseResult.Valid -> result.userId
+            AccessTokenParseResult.Expired -> return AuthErrorReason.TOKEN_EXPIRED
+            AccessTokenParseResult.Invalid -> return AuthErrorReason.TOKEN_INVALID
+        }
+
+        val authView = userRepository.findAuthViewById(userId)
+            ?: run {
+                log.warn("\n\t[WARN] [jwt_auth_filter][authenticate] Token for non-existent user {}", userId)
+                return AuthErrorReason.TOKEN_INVALID
+            }
+
+        when(authView.accountStatus) {
+            AccountStatus.ACTIVE -> Unit
+            AccountStatus.PENDING_ACTIVATION -> return AuthErrorReason.ACCOUNT_NOT_ACTIVATED
+            else -> {
+                log.warn("\n\t[WARN] [jwt_auth_filter][authenticate] Token used by {} account {}", authView.accountStatus, userId)
+                return AuthErrorReason.ACCOUNT_DISABLED
+            }
+        }
+
+        val role = authView.role.name
+        val principal = JwtUserPrincipal(userId = userId, role = role)
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_$role"))
+
+        SecurityContextHolder.getContext().authentication =
+            UsernamePasswordAuthenticationToken(principal, null, authorities)
+
+        log.debug("\n\t[DEBUG] [jwt_auth_filter][authenticate] Authenticated user {} with role {}", userId, role)
+        return null
     }
 
     private fun extractToken(request: HttpServletRequest): String? {

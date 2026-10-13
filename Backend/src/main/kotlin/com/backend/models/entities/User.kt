@@ -78,6 +78,20 @@ class User(
         emailVerifiedAt = Instant.now()
     }
 
+    fun markDeleted() {
+        check(accountStatus != AccountStatus.DELETED) { "Account is already deleted" }
+        val userId = checkNotNull(id) { "Cannot delete a user that has not been persisted" }
+
+        username = "deleted_$userId"
+        email = "deleted-$userId@deleted.invalid"
+        firstName = "Deleted"
+        lastName = "User"
+        passwordHash = ""
+        avatarId = null
+        notificationsEnabled = false
+        accountStatus = AccountStatus.DELETED
+    }
+
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
         if(other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false

@@ -10,4 +10,6 @@ import java.util.UUID
 interface EmailVerificationRepository: JpaRepository<EmailVerification, UUID> {
 
     fun findByUserId(userId: UUID): Optional<EmailVerification>
+
+    fun deleteByUserId(userId: UUID): Long
 }

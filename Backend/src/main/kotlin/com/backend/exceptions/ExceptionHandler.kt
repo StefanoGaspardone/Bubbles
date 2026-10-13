@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.security.access.AccessDeniedException
 import java.time.Instant
 
 @Schema(description = "Standard error response")
@@ -78,6 +79,10 @@ class ExceptionsHandler {
     fun handleOtpExpired(ex: OtpExpiredException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
+    @ExceptionHandler(IncorrectPasswordException::class)
+    fun handleIncorrectPassword(ex: IncorrectPasswordException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
     // =========================================================================
     // 401 Unauthorized
     // =========================================================================
@@ -98,6 +103,18 @@ class ExceptionsHandler {
     fun handleRefreshTokenReuseDetected(ex: RefreshTokenReuseDetectedException) =
         buildResponse(HttpStatus.UNAUTHORIZED, ex)
 
+    @ExceptionHandler(AuthenticationRequiredException::class)
+    fun handleAuthenticationRequired(ex: AuthenticationRequiredException) =
+        buildResponse(HttpStatus.UNAUTHORIZED, ex)
+
+    @ExceptionHandler(AccessTokenExpiredException::class)
+    fun handleAccessTokenExpired(ex: AccessTokenExpiredException) =
+        buildResponse(HttpStatus.UNAUTHORIZED, ex)
+
+    @ExceptionHandler(InvalidAccessTokenException::class)
+    fun handleInvalidAccessToken(ex: InvalidAccessTokenException) =
+        buildResponse(HttpStatus.UNAUTHORIZED, ex)
+
     // =========================================================================
     // 403 Forbidden
     // =========================================================================
@@ -109,6 +126,10 @@ class ExceptionsHandler {
     @ExceptionHandler(AccountDisabledException::class)
     fun handleAccountDisabled(ex: AccountDisabledException) =
         buildResponse(HttpStatus.FORBIDDEN, ex)
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(ex: AccessDeniedException) =
+        buildResponse(HttpStatus.FORBIDDEN, "You do not have permission to access this resource")
 
     // =========================================================================
     // 404 Not Found
@@ -124,6 +145,10 @@ class ExceptionsHandler {
 
     @ExceptionHandler(PasswordResetNotFoundException::class)
     fun handlePasswordResetNotFound(ex: PasswordResetNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFound(ex: UserNotFoundException) =
         buildResponse(HttpStatus.NOT_FOUND, ex)
 
     // =========================================================================
