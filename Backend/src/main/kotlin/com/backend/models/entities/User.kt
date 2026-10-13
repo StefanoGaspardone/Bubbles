@@ -1,5 +1,6 @@
 package com.backend.models.entities
 
+import com.backend.exceptions.AccountAlreadyActivatedException
 import com.backend.models.enums.AccountStatus
 import com.backend.models.enums.UserRole
 import jakarta.persistence.*
@@ -64,8 +65,18 @@ class User(
         lastLoginAt = Instant.now()
     }
 
-    fun isActive(): Boolean =
-        accountStatus == AccountStatus.ACTIVE
+    fun ensurePendingActivation() {
+        if(accountStatus != AccountStatus.PENDING_ACTIVATION) {
+            throw AccountAlreadyActivatedException()
+        }
+    }
+
+    fun activate() {
+        ensurePendingActivation()
+
+        accountStatus = AccountStatus.ACTIVE
+        emailVerifiedAt = Instant.now()
+    }
 
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
@@ -75,8 +86,9 @@ class User(
         return id != null && id == other.id
     }
 
-    override fun hashCode(): Int = Hibernate.getClass(this).hashCode()
+    override fun hashCode(): Int =
+        Hibernate.getClass(this).hashCode()
 
-    override fun toString(): String = "User(id=$id, username=$username, email=$email)"
-
+    override fun toString(): String =
+        "User(id=$id, username=$username, email=$email)"
 }
