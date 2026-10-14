@@ -7,7 +7,10 @@ import com.backend.models.dtos.DeleteAccountRequestDTO
 import com.backend.models.dtos.UpdateUserRequestDTO
 import com.backend.models.dtos.UserDTO
 import com.backend.models.entities.User
+import com.backend.repositories.DiveRepository
+import com.backend.repositories.DiveSiteRepository
 import com.backend.repositories.EmailVerificationRepository
+import com.backend.repositories.GearRepository
 import com.backend.repositories.PasswordResetRepository
 import com.backend.repositories.RefreshTokenRepository
 import com.backend.repositories.UserRepository
@@ -24,6 +27,9 @@ class UserService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val emailVerificationRepository: EmailVerificationRepository,
     private val passwordResetRepository: PasswordResetRepository,
+    private val diveRepository: DiveRepository,
+    private val diveSiteRepository: DiveSiteRepository,
+    private val gearRepository: GearRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
@@ -90,21 +96,24 @@ class UserService(
 
         try {
             val now = Instant.now()
-            val user = findUser(userId)
+            var user = findUser(userId)
 
             if(!passwordEncoder.matches(request.password, user.passwordHash)) {
                 throw IncorrectPasswordException()
             }
 
-            // TODO: when dives, gear and certifications exist, delete or anonymize them here
+            val deletedDives = diveRepository.deleteByOwnerId(userId)
+            val deletedSites = diveSiteRepository.deleteByOwnerId(userId)
+            val deletedGear = gearRepository.deleteByOwnerId(userId)
 
+            user = findUser(userId)
             user.markDeleted()
 
             val revoked = refreshTokenRepository.revokeAllByUserId(userId, now)
             emailVerificationRepository.deleteByUserId(userId)
             passwordResetRepository.deleteByUserId(userId)
 
-            logger.info("\n\t[INFO] [user_service][delete_account] Account {} deleted, {} sessions revoked", userId, revoked)
+            logger.info("\n\t[INFO] [user_service][delete_account] Account {} deleted: {} dives, {} sites, {} gear removed, {} sessions revoked", userId, deletedDives, deletedSites, deletedGear, revoked)
         } catch(e: UserNotFoundException) {
             logger.warn("\n\t[WARN] [user_service][delete_account] User {} not found", userId)
             throw e
@@ -116,10 +125,6 @@ class UserService(
             throw e
         }
     }
-
-    // =========================================================================
-    // Helpers
-    // =========================================================================
 
     private fun findUser(userId: UUID): User =
         userRepository.findById(userId)

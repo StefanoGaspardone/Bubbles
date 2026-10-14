@@ -57,3 +57,9 @@ class DiveSiteNotFoundException(val siteId: UUID): RuntimeException("Dive site n
 class InvalidDiveException(message: String): RuntimeException(message)
 
 class DiveOverlapException: RuntimeException("This dive overlaps another dive in your logbook")
+
+class DiveSiteNotEditableException(val siteId: UUID): RuntimeException("Public dive sites cannot be modified or deleted")
+
+class DiveSiteInUseException(val diveCount: Long): RuntimeException("Dive site is used by $diveCount dives and cannot be deleted")
+
+class InvalidDiveSiteException(message: String): RuntimeException(message)

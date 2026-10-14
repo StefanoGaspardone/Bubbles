@@ -1,6 +1,8 @@
 package com.backend.repositories
 
 import com.backend.models.entities.Dive
+import com.backend.models.projections.DiveNumberProjection
+import com.backend.models.projections.SiteDiveCountProjection
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
@@ -12,11 +14,6 @@ import org.springframework.stereotype.Repository
 import java.time.Instant
 import java.util.Optional
 import java.util.UUID
-
-interface DiveNumberView {
-    val id: UUID
-    val diveNumber: Long
-}
 
 @Repository
 interface DiveRepository: JpaRepository<Dive, UUID> {
@@ -62,7 +59,7 @@ interface DiveRepository: JpaRepository<Dive, UUID> {
         """,
         nativeQuery = true
     )
-    fun findDiveNumbers(@Param("ownerId") ownerId: UUID, @Param("ids") ids: Collection<UUID>): List<DiveNumberView>
+    fun findDiveNumbers(@Param("ownerId") ownerId: UUID, @Param("ids") ids: Collection<UUID>): List<DiveNumberProjection>
 
     @Query(
         value = """
@@ -94,6 +91,20 @@ interface DiveRepository: JpaRepository<Dive, UUID> {
     ): Boolean
 
     fun countByOwnerId(ownerId: UUID): Long
+
+    fun countBySiteIdAndOwnerId(siteId: UUID, ownerId: UUID): Long
+
+    fun countBySiteId(siteId: UUID): Long
+
+    @Query(
+        """
+        SELECT d.site.id AS siteId, COUNT(d) AS diveCount
+        FROM Dive d
+        WHERE d.owner.id = :ownerId AND d.site.id IN :siteIds
+        GROUP BY d.site.id
+        """
+    )
+    fun countDivesBySite(@Param("ownerId") ownerId: UUID, @Param("siteIds") siteIds: Collection<UUID>): List<SiteDiveCountProjection>
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM Dive d WHERE d.owner.id = :ownerId")

@@ -96,6 +96,10 @@ class ExceptionsHandler {
     fun handleInvalidDive(ex: InvalidDiveException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
+    @ExceptionHandler(InvalidDiveSiteException::class)
+    fun handleInvalidDiveSite(ex: InvalidDiveSiteException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
     // =========================================================================
     // 401 Unauthorized
     // =========================================================================
@@ -143,6 +147,10 @@ class ExceptionsHandler {
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDenied(ex: AccessDeniedException) =
         buildResponse(HttpStatus.FORBIDDEN, "You do not have permission to access this resource")
+
+    @ExceptionHandler(DiveSiteNotEditableException::class)
+    fun handleDiveSiteNotEditable(ex: DiveSiteNotEditableException) =
+        buildResponse(HttpStatus.FORBIDDEN, ex)
 
     // =========================================================================
     // 404 Not Found
@@ -194,6 +202,10 @@ class ExceptionsHandler {
 
     @ExceptionHandler(DiveOverlapException::class)
     fun handleDiveOverlap(ex: DiveOverlapException) =
+        buildResponse(HttpStatus.CONFLICT, ex)
+
+    @ExceptionHandler(DiveSiteInUseException::class)
+    fun handleDiveSiteInUse(ex: DiveSiteInUseException) =
         buildResponse(HttpStatus.CONFLICT, ex)
 
     // =========================================================================
