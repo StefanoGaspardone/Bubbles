@@ -45,3 +45,15 @@ class InvalidAccessTokenException: RuntimeException("Invalid access token")
 class UserNotFoundException(val userId: UUID): RuntimeException("User not found")
 
 class IncorrectPasswordException: RuntimeException("Incorrect password")
+
+class GearNotFoundException(val gearId: UUID): RuntimeException("Gear not found")
+
+class InvalidGearAttributesException(message: String): RuntimeException(message)
+
+class DiveNotFoundException(val diveId: UUID): RuntimeException("Dive not found")
+
+class DiveSiteNotFoundException(val siteId: UUID): RuntimeException("Dive site not found")
+
+class InvalidDiveException(message: String): RuntimeException(message)
+
+class DiveOverlapException: RuntimeException("This dive overlaps another dive in your logbook")

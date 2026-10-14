@@ -52,6 +52,12 @@ class User(
     @Column(name = "last_login_at", nullable = true)
     var lastLoginAt: Instant? = null,
 
+    @Column(name = "dive_number_offset", nullable = false)
+    var diveNumberOffset: Int = 0,
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    val gear: MutableList<Gear> = mutableListOf(),
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant = Instant.now(),

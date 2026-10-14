@@ -22,4 +22,7 @@ interface UserRepository : JpaRepository<User, UUID> {
 
     @Query("SELECT u.accountStatus AS accountStatus, u.role AS role FROM User u WHERE u.id = :id")
     fun findAuthViewById(@Param("id") id: UUID): UserAuthProjection?
+
+    @Query("SELECT u.diveNumberOffset FROM User u WHERE u.id = :id")
+    fun findDiveNumberOffset(@Param("id") id: UUID): Int?
 }

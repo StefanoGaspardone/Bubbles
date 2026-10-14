@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import java.time.Instant
 
 @Schema(description = "Standard error response")
@@ -83,6 +84,18 @@ class ExceptionsHandler {
     fun handleIncorrectPassword(ex: IncorrectPasswordException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
+    @ExceptionHandler(InvalidGearAttributesException::class)
+    fun handleInvalidGearAttributes(ex: InvalidGearAttributesException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun handleTypeMismatch(ex: MethodArgumentTypeMismatchException) =
+        buildResponse(HttpStatus.BAD_REQUEST, "${ex.name}: invalid value '${ex.value}'")
+
+    @ExceptionHandler(InvalidDiveException::class)
+    fun handleInvalidDive(ex: InvalidDiveException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
     // =========================================================================
     // 401 Unauthorized
     // =========================================================================
@@ -151,6 +164,18 @@ class ExceptionsHandler {
     fun handleUserNotFound(ex: UserNotFoundException) =
         buildResponse(HttpStatus.NOT_FOUND, ex)
 
+    @ExceptionHandler(GearNotFoundException::class)
+    fun handleGearNotFound(ex: GearNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler(DiveNotFoundException::class)
+    fun handleDiveNotFound(ex: DiveNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler(DiveSiteNotFoundException::class)
+    fun handleDiveSiteNotFound(ex: DiveSiteNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
     // =========================================================================
     // 409 Conflict
     // =========================================================================
@@ -165,6 +190,10 @@ class ExceptionsHandler {
 
     @ExceptionHandler(AccountAlreadyActivatedException::class)
     fun handleAccountAlreadyActivated(ex: AccountAlreadyActivatedException) =
+        buildResponse(HttpStatus.CONFLICT, ex)
+
+    @ExceptionHandler(DiveOverlapException::class)
+    fun handleDiveOverlap(ex: DiveOverlapException) =
         buildResponse(HttpStatus.CONFLICT, ex)
 
     // =========================================================================
