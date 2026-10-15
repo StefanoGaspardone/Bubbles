@@ -39,8 +39,7 @@ data class DiveSegmentDTO(
     val type: DiveSegmentType,
 
     @field:Schema(
-        description = "Depth in meters. For DESCENT/ASCENT: depth reached at the end of the phase. " +
-                "For BOTTOM and stops: depth held during the phase. For SURFACE: 0.",
+        description = "Depth in meters. For DESCENT/ASCENT: depth reached at the end of the phase. For BOTTOM and stops: depth held during the phase. For SURFACE: 0.",
         example = "18",
     )
     @field:DecimalMin("0.0")
@@ -258,6 +257,13 @@ data class DiveRequestDTO(
     @field:Valid
     @field:Size(max = 40)
     val gear: List<DiveGearSelectionDTO> = emptyList(),
+
+    @field:Schema(
+        description = "Buddies of the dive, in display order. Real users (userId) receive an email and can confirm the dive by scanning its QR code; custom buddies (firstName/lastName) need no confirmation.",
+    )
+    @field:Valid
+    @field:Size(max = 10)
+    val buddies: List<DiveBuddySelectionDTO> = emptyList(),
 
     @field:Schema(description = "Symptoms before the dive", example = "[\"FATIGUE\"]")
     val symptomsBefore: Set<DiveSymptom> = emptySet(),
@@ -513,6 +519,9 @@ data class DiveDTO(
     @field:Schema(description = "Gear used, as it was when the dive was logged")
     val gear: List<DiveGearDTO>,
 
+    @field:Schema(description = "Buddies of the dive, with confirmation status")
+    val buddies: List<DiveBuddyDTO>,
+
     @field:Schema(description = "Total gas used from all tanks, in surface liters", example = "1680", nullable = true)
     val gasUsedL: Double?,
 
@@ -582,6 +591,7 @@ data class DiveDTO(
                 segments = dive.segments.map(DiveSegmentDTO::from),
                 tanks = dive.tanks.map { DiveTankDTO.from(it, durationMin, dive.avgDepthM, dive.waterType) },
                 gear = dive.gear.map(DiveGearDTO::from),
+                buddies = dive.buddies.map(DiveBuddyDTO::from),
                 gasUsedL = dive.gasUsedL?.roundTo(0),
                 rmvLMin = dive.rmvLMin?.roundTo(1),
                 symptomsBefore = dive.symptomsBefore.toSet(),

@@ -152,6 +152,20 @@ class Dive(
     @OrderBy("position ASC")
     val gear: MutableList<DiveGear> = mutableListOf()
 
+    @OneToMany(mappedBy = "dive", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OrderBy("position ASC")
+    val buddies: MutableList<DiveBuddy> = mutableListOf()
+
+    fun replaceBuddies(newBuddies: List<DiveBuddy>) {
+        require(newBuddies.all { it.dive === this }) { "All buddies must belong to this dive" }
+
+        buddies.clear()
+        newBuddies.forEachIndexed { index, buddy ->
+            buddy.position = index
+            buddies.add(buddy)
+        }
+    }
+
     fun duration(): Duration =
         Duration.between(startedAt, endedAt)
 

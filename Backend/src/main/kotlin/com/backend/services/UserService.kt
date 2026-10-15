@@ -1,25 +1,22 @@
 package com.backend.services
 
 import com.backend.exceptions.IncorrectPasswordException
+import com.backend.exceptions.InvalidPaginationException
 import com.backend.exceptions.UserNotFoundException
 import com.backend.exceptions.UsernameAlreadyTakenException
-import com.backend.models.dtos.DeleteAccountRequestDTO
-import com.backend.models.dtos.UpdateUserRequestDTO
-import com.backend.models.dtos.UserDTO
+import com.backend.models.dtos.*
 import com.backend.models.entities.User
-import com.backend.repositories.DiveRepository
-import com.backend.repositories.DiveSiteRepository
-import com.backend.repositories.EmailVerificationRepository
-import com.backend.repositories.GearRepository
-import com.backend.repositories.PasswordResetRepository
-import com.backend.repositories.RefreshTokenRepository
-import com.backend.repositories.UserRepository
+import com.backend.models.enums.AccountStatus
+import com.backend.models.specifications.UserSpecification
+import com.backend.repositories.*
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 @Service
 class UserService(
@@ -34,6 +31,10 @@ class UserService(
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private companion object {
+        const val MAX_PAGE_SIZE = 100
+    }
 
     @Transactional(readOnly = true)
     fun getUserById(userId: UUID): UserDTO {
@@ -122,6 +123,33 @@ class UserService(
             throw e
         } catch(e: Exception) {
             logger.error("\n\t[ERROR] [user_service][delete_account] Error deleting account {}: {}", userId, e.message)
+            throw e
+        }
+    }
+
+    @Transactional(readOnly = true)
+    fun listUsers(page: Int, size: Int, username: String?, accountStatus: AccountStatus?): PageDTO<UserLookupDTO> {
+        logger.debug("\n\t[DEBUG] [user_service][list_users] Listing users (page={}, size={}, username={}, accountStatus={})", page, size, username, accountStatus)
+
+        try {
+            val errors = mutableListOf<String>()
+            if(page < 0) errors += "page: must be greater than or equal to 0"
+            if(size !in 1..MAX_PAGE_SIZE) errors += "size: must be between 1 and $MAX_PAGE_SIZE"
+
+            if(errors.isNotEmpty()) {
+                throw InvalidPaginationException(errors.joinToString("; "))
+            }
+
+            val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "username"))
+            val result = userRepository.findAll(UserSpecification.withFilters(username, accountStatus), pageable)
+
+            logger.debug("\n\t[DEBUG] [user_service][list_users] Found {} users (total {})", result.numberOfElements, result.totalElements)
+            return result.toPageDTO(UserLookupDTO::from)
+        } catch(e: InvalidPaginationException) {
+            logger.warn("\n\t[WARN] [user_service][list_users] Invalid parameters: {}", e.message)
+            throw e
+        } catch(e: Exception) {
+            logger.error("\n\t[ERROR] [user_service][list_users] Error listing users: {}", e.message)
             throw e
         }
     }

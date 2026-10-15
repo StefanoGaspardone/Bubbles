@@ -3,11 +3,15 @@ package com.backend.controllers
 import com.backend.configs.OpenAPIConfig
 import com.backend.exceptions.ErrorResponse
 import com.backend.models.dtos.DeleteAccountRequestDTO
+import com.backend.models.dtos.PageDTO
 import com.backend.models.dtos.UpdateUserRequestDTO
 import com.backend.models.dtos.UserDTO
+import com.backend.models.dtos.UserLookupDTO
+import com.backend.models.enums.AccountStatus
 import com.backend.security.CurrentUser
 import com.backend.services.UserService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
@@ -161,4 +165,49 @@ class UserController(
         userService.deleteAccount(CurrentUser.id(), request)
         return ResponseEntity.noContent().build()
     }
+
+    @Operation(
+        summary = "List users",
+        description = "List active users ordered by username, optionally filtered by a text contained in the username " +
+                "(case-insensitive). Used to find a user to add as buddy in a dive."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Ok - Page of users (empty if none)"),
+            ApiResponse(
+                responseCode = "400", description = "Bad Request - Invalid paging parameters",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ErrorResponse::class),
+                    examples = [ExampleObject(
+                        name = "InvalidPagingExample",
+                        summary = "Invalid paging example",
+                        value = "{\"timestamp\":\"2026-10-15T12:00:00Z\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"size: must be between 1 and 100\"}"
+                    )]
+                )]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Unauthorized - Missing, invalid or expired access token",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ErrorResponse::class),
+                    examples = [ExampleObject(
+                        name = "TokenExpiredExample",
+                        summary = "Expired token example",
+                        value = "{\"timestamp\":\"2026-10-15T12:00:00Z\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Access token expired\"}"
+                    )]
+                )]
+            ),
+        ]
+    )
+    @GetMapping
+    fun listUsers(
+        @Parameter(description = "Zero-based page index", example = "0")
+        @RequestParam(defaultValue = "0") page: Int,
+        @Parameter(description = "Page size (1-100)", example = "20")
+        @RequestParam(defaultValue = "20") size: Int,
+        @Parameter(description = "Text contained in the username, case-insensitive", example = "marco")
+        @RequestParam(required = false) username: String?,
+    ): PageDTO<UserLookupDTO> =
+        userService.listUsers(page, size, username, AccountStatus.ACTIVE)
 }

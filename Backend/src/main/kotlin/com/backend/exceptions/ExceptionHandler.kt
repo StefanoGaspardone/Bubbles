@@ -100,6 +100,10 @@ class ExceptionsHandler {
     fun handleInvalidDiveSite(ex: InvalidDiveSiteException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
+    @ExceptionHandler(InvalidPaginationException::class)
+    fun handleInvalidPagination(ex: InvalidPaginationException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
     // =========================================================================
     // 401 Unauthorized
     // =========================================================================

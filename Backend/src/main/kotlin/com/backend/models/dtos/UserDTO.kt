@@ -47,10 +47,38 @@ data class UserDTO(
     }
 }
 
-/**
- * Partial update: null fields are not modified.
- * Bean Validation constraints ignore null values, so they apply only to the fields actually sent.
- */
+@Schema(description = "Partial representation of user")
+data class UserLookupDTO(
+    @field:Schema(description = "Unique identifier of the user", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+    val id: UUID,
+
+    @field:Schema(description = "Username, always lowercase", example = "stivigas")
+    val username: String,
+
+    @field:Schema(description = "Email address, always lowercase", example = "user@example.com")
+    val email: String,
+
+    @field:Schema(description = "First name", example = "John")
+    val firstName: String,
+
+    @field:Schema(description = "Last name", example = "Doe")
+    val lastName: String,
+
+    @field:Schema(description = "ID of the uploaded avatar file. Null if no custom avatar was uploaded.")
+    val avatarId: UUID?,
+) {
+    companion object {
+        fun from(user: User) = UserLookupDTO(
+            id = user.id!!,
+            username = user.username,
+            email = user.email,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            avatarId = user.avatarId,
+        )
+    }
+}
+
 @Schema(description = "Payload to update the current user's profile. Fields left null are not modified.")
 data class UpdateUserRequestDTO(
     @field:Schema(

@@ -2,6 +2,7 @@ package com.backend.controllers
 
 import com.backend.configs.OpenAPIConfig
 import com.backend.exceptions.ErrorResponse
+import com.backend.models.dtos.DiveConfirmationDTO
 import com.backend.models.dtos.DiveDTO
 import com.backend.models.dtos.DiveRequestDTO
 import com.backend.models.dtos.DiveSummaryDTO
@@ -375,4 +376,48 @@ class DiveController(
         diveService.deleteDive(CurrentUser.id(), diveId)
         return ResponseEntity.noContent().build()
     }
+
+    @Operation(
+        summary = "Confirm dive as buddy",
+        description = "Confirm, as buddy, a dive logged by another user. Called by the buddy's app after scanning " +
+                "the QR code shown by the diver who logged the dive. Idempotent: confirming again keeps the original date."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Ok - Dive confirmed, summary of what was confirmed",
+                content = [Content(schema = Schema(implementation = DiveConfirmationDTO::class))]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Unauthorized - Missing, invalid or expired access token",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ErrorResponse::class),
+                    examples = [ExampleObject(
+                        name = "TokenExpiredExample",
+                        summary = "Expired token example",
+                        value = "{\"timestamp\":\"2026-10-15T12:00:00Z\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Access token expired\"}"
+                    )]
+                )]
+            ),
+            ApiResponse(
+                responseCode = "404", description = "Not Found - Dive does not exist or the current user is not one of its buddies",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ErrorResponse::class),
+                    examples = [ExampleObject(
+                        name = "DiveNotFoundExample",
+                        summary = "Not a buddy of this dive example",
+                        value = "{\"timestamp\":\"2026-10-15T12:00:00Z\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Dive not found\"}"
+                    )]
+                )]
+            ),
+        ]
+    )
+    @PostMapping("/{diveId}/confirm")
+    fun confirmDiveAsBuddy(
+        @Parameter(description = "Dive id, read from the QR code", example = "5d7e2a9c-3b4f-4e1a-8c6d-2f1e0a9b8c7d")
+        @PathVariable diveId: UUID,
+    ): ResponseEntity<DiveConfirmationDTO> =
+        ResponseEntity.ok(diveService.confirmDive(CurrentUser.id(), diveId))
 }

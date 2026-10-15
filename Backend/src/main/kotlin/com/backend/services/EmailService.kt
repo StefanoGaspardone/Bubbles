@@ -1,5 +1,7 @@
 package com.backend.services
 
+import com.backend.models.events.BuddyNotification
+import com.backend.models.events.BuddyNotificationReason
 import com.backend.properties.EmailProperties
 import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
@@ -8,7 +10,6 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -20,6 +21,11 @@ class EmailService(
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private companion object {
+        val DIVE_DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
+        val DIVE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+    }
 
     @Async
     fun sendActivationOtp(to: String, otpCode: String, expiresInMinutes: Long) {
@@ -39,6 +45,27 @@ class EmailService(
         }
 
         send(to = to, subject = "Reset your password - Bubbles", template = "emails/password-reset", context = context)
+    }
+
+    @Async
+    fun sendBuddyNotification(notification: BuddyNotification) {
+        val subject = when(notification.reason) {
+            BuddyNotificationReason.ADDED ->
+                "${notification.ownerFullName} added you as dive buddy - Bubbles"
+            BuddyNotificationReason.DATA_CHANGED ->
+                "${notification.ownerFullName} changed a dive you confirmed - Bubbles"
+        }
+
+        val context = Context().apply {
+            setVariable("buddyFirstName", notification.buddyFirstName)
+            setVariable("ownerFullName", notification.ownerFullName)
+            setVariable("siteName", notification.siteName)
+            setVariable("diveDate", notification.diveStartLocal.format(DIVE_DATE_FORMATTER))
+            setVariable("diveTime", notification.diveStartLocal.format(DIVE_TIME_FORMATTER))
+            setVariable("dataChanged", notification.reason == BuddyNotificationReason.DATA_CHANGED)
+        }
+
+        send(to = notification.toEmail, subject = subject, template = "emails/buddy-notification", context = context)
     }
 
     private fun send(to: String, subject: String, template: String, context: Context) {

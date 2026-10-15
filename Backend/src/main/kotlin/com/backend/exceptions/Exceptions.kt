@@ -63,3 +63,5 @@ class DiveSiteNotEditableException(val siteId: UUID): RuntimeException("Public d
 class DiveSiteInUseException(val diveCount: Long): RuntimeException("Dive site is used by $diveCount dives and cannot be deleted")
 
 class InvalidDiveSiteException(message: String): RuntimeException(message)
+
+class InvalidPaginationException(message: String): RuntimeException(message)
