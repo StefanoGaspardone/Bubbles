@@ -62,7 +62,7 @@ services:
       - mailpit_data:/data
     environment:
       MP_DATABASE: /data/mailpit.db
-    restart: unless-stopped
+    restart: "no"
 
 volumes:
   db_data:

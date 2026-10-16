@@ -58,6 +58,9 @@ class User(
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     val gear: MutableList<Gear> = mutableListOf(),
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    val certifications: MutableList<Certification> = mutableListOf(),
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant = Instant.now(),

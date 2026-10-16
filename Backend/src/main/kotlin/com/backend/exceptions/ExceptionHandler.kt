@@ -104,6 +104,10 @@ class ExceptionsHandler {
     fun handleInvalidPagination(ex: InvalidPaginationException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
+    @ExceptionHandler(InvalidCertificationException::class)
+    fun handleInvalidCertification(ex: InvalidCertificationException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
     // =========================================================================
     // 401 Unauthorized
     // =========================================================================
@@ -186,6 +190,10 @@ class ExceptionsHandler {
 
     @ExceptionHandler(DiveSiteNotFoundException::class)
     fun handleDiveSiteNotFound(ex: DiveSiteNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler(CertificationNotFoundException::class)
+    fun handleCertificationNotFound(ex: CertificationNotFoundException) =
         buildResponse(HttpStatus.NOT_FOUND, ex)
 
     // =========================================================================

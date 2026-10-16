@@ -65,3 +65,7 @@ class DiveSiteInUseException(val diveCount: Long): RuntimeException("Dive site i
 class InvalidDiveSiteException(message: String): RuntimeException(message)
 
 class InvalidPaginationException(message: String): RuntimeException(message)
+
+class CertificationNotFoundException(val certificationId: UUID): RuntimeException("Certification not found")
+
+class InvalidCertificationException(message: String): RuntimeException(message)

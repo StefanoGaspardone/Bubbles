@@ -27,6 +27,7 @@ class UserService(
     private val diveRepository: DiveRepository,
     private val diveSiteRepository: DiveSiteRepository,
     private val gearRepository: GearRepository,
+    private val certificationRepository: CertificationRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
@@ -106,6 +107,7 @@ class UserService(
             val deletedDives = diveRepository.deleteByOwnerId(userId)
             val deletedSites = diveSiteRepository.deleteByOwnerId(userId)
             val deletedGear = gearRepository.deleteByOwnerId(userId)
+            val deletedCertifications = certificationRepository.deleteByOwnerId(userId)
 
             user = findUser(userId)
             user.markDeleted()
@@ -114,7 +116,7 @@ class UserService(
             emailVerificationRepository.deleteByUserId(userId)
             passwordResetRepository.deleteByUserId(userId)
 
-            logger.info("\n\t[INFO] [user_service][delete_account] Account {} deleted: {} dives, {} sites, {} gear removed, {} sessions revoked", userId, deletedDives, deletedSites, deletedGear, revoked)
+            logger.info("\n\t[INFO] [user_service][delete_account] Account {} deleted: {} dives, {} sites, {} gear, {} certifications removed, {} sessions revoked", userId, deletedDives, deletedSites, deletedGear, deletedCertifications, revoked)
         } catch(e: UserNotFoundException) {
             logger.warn("\n\t[WARN] [user_service][delete_account] User {} not found", userId)
             throw e
