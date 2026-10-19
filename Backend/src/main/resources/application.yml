@@ -84,6 +84,15 @@ otp:
   resend-cooldown-seconds: 60
 
 # ============================================================
+# REFRESH COOKIE CONFIGURATION
+# ============================================================
+refresh-cookie:
+  name: bubbles_refresh_token
+  path: /api/v1/auth
+  secure: true
+  same-site: Strict
+
+# ============================================================
 # S3 CONFIGURATION
 # ============================================================
 s3:

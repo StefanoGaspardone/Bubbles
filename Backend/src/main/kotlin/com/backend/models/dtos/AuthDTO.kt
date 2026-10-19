@@ -1,5 +1,6 @@
 package com.backend.models.dtos
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -81,32 +82,40 @@ data class LoginRequestDTO(
     val password: String,
 )
 
-@Schema(description = "Payload to refresh or revoke a session")
+@Schema(description = "Payload to refresh or revoke a session. Mobile clients only: web clients send the refresh token as HttpOnly cookie and no body.")
 data class RefreshTokenRequestDTO(
     @field:Schema(description = "Opaque refresh token previously issued at login or refresh")
     @field:NotBlank
     val refreshToken: String,
 )
 
-@Schema(description = "Access and refresh token pair returned after successful authentication")
+@Schema(description = "Access token (and, for mobile clients, refresh token) returned after successful authentication")
 data class AuthResponseDTO(
     @field:Schema(description = "Short-lived JWT used to authenticate API requests")
     val accessToken: String,
 
-    @field:Schema(description = "Long-lived opaque token used to obtain a new access token")
-    val refreshToken: String,
+    @field:Schema(
+        description = "Long-lived opaque token used to obtain a new access token. Returned in the body only to mobile clients (X-Client-Type: MOBILE); web clients receive it as HttpOnly cookie.",
+        nullable = true,
+    )
+    @field:JsonInclude(JsonInclude.Include.NON_NULL)
+    val refreshToken: String?,
 
     @field:Schema(description = "Authenticated user's public profile")
     val user: UserDTO,
 )
 
-@Schema(description = "New token pair returned after a successful refresh")
+@Schema(description = "New tokens returned after a successful refresh")
 data class RefreshResponseDTO(
     @field:Schema(description = "New short-lived JWT")
     val accessToken: String,
 
-    @field:Schema(description = "New long-lived opaque token, replaces the one used in the request")
-    val refreshToken: String,
+    @field:Schema(
+        description = "New long-lived opaque token, replaces the one used in the request. Returned in the body only to mobile clients (X-Client-Type: MOBILE); web clients receive it as HttpOnly cookie.",
+        nullable = true,
+    )
+    @field:JsonInclude(JsonInclude.Include.NON_NULL)
+    val refreshToken: String?,
 )
 
 @Schema(description = "Payload to start a password reset")

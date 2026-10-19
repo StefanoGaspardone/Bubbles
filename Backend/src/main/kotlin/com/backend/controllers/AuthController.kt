@@ -1,6 +1,7 @@
 package com.backend.controllers
 
 import com.backend.exceptions.ErrorResponse
+import com.backend.exceptions.RefreshTokenNotFoundException
 import com.backend.models.dtos.ActivateAccountRequestDTO
 import com.backend.models.dtos.AuthResponseDTO
 import com.backend.models.dtos.ForgotPasswordRequestDTO
@@ -11,8 +12,12 @@ import com.backend.models.dtos.RegisterRequestDTO
 import com.backend.models.dtos.RegisterResponseDTO
 import com.backend.models.dtos.ResendOtpRequestDTO
 import com.backend.models.dtos.ResetPasswordRequestDTO
+import com.backend.security.CLIENT_TYPE_HEADER
+import com.backend.security.ClientType
+import com.backend.security.RefreshTokenCookies
 import com.backend.services.AuthService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -20,29 +25,31 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
+import org.springframework.http.CacheControl
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+
+private const val CLIENT_TYPE_DESCRIPTION = "Client type. WEB (default): the refresh token travels only in an HttpOnly cookie. MOBILE: the refresh token travels in the request and response body."
 
 @Tag(name = "Auth", description = "REST APIs for authentication: signup, activation, login, token refresh and password reset")
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
     private val authService: AuthService,
+    private val refreshTokenCookies: RefreshTokenCookies,
 ) {
-
-    // =========================================================================
-    // Signup
-    // =========================================================================
 
     @Operation(
         summary = "Signup",
-        description = "Create a new account and send a 6-digit verification code via email. " +
-                "The account must be activated with /activate before logging in."
+        description = "Create a new account and send a 6-digit verification code via email. The account must be activated with /activate before logging in."
     )
     @ApiResponses(
         value = [
@@ -88,14 +95,9 @@ class AuthController(
     fun signup(@Valid @RequestBody request: RegisterRequestDTO): ResponseEntity<RegisterResponseDTO> =
         ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(request))
 
-    // =========================================================================
-    // Activation
-    // =========================================================================
-
     @Operation(
         summary = "Activate account",
-        description = "Verify the OTP sent via email and activate the account. " +
-                "Does not log the user in: call /login afterwards."
+        description = "Verify the OTP sent via email and activate the account. Does not log the user in: call /login afterwards."
     )
     @ApiResponses(
         value = [
@@ -173,8 +175,7 @@ class AuthController(
 
     @Operation(
         summary = "Resend activation OTP",
-        description = "Send a new verification code, invalidating the previous one and resetting the attempts counter. " +
-                "Subject to a cooldown between requests."
+        description = "Send a new verification code, invalidating the previous one and resetting the attempts counter. Subject to a cooldown between requests."
     )
     @ApiResponses(
         value = [
@@ -235,23 +236,23 @@ class AuthController(
         return ResponseEntity.noContent().build()
     }
 
-    // =========================================================================
-    // Session
-    // =========================================================================
-
     @Operation(
         summary = "Login",
-        description = "Authenticate with email or username and password. " +
-                "Returns a short-lived access token, a refresh token and the user profile."
+        description = "Authenticate with email or username and password. Returns a short-lived access token and the user profile. Web clients receive the refresh token as HttpOnly cookie (scoped to /api/v1/auth); mobile clients (X-Client-Type: MOBILE) receive it in the body."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200", description = "Ok - Successfully authenticated",
+                headers = [Header(
+                    name = "Set-Cookie",
+                    description = "Web clients only: HttpOnly cookie with the refresh token",
+                    schema = Schema(type = "string")
+                )],
                 content = [Content(schema = Schema(implementation = AuthResponseDTO::class))]
             ),
             ApiResponse(
-                responseCode = "400", description = "Bad Request - Invalid request data",
+                responseCode = "400", description = "Bad Request - Invalid request data or client type",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = ErrorResponse::class),
@@ -259,6 +260,10 @@ class AuthController(
                         name = "ValidationErrorExample",
                         summary = "Validation error example",
                         value = "{\"timestamp\":\"2026-10-13T12:00:00Z\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"password: must not be blank\"}"
+                    ), ExampleObject(
+                        name = "InvalidClientTypeExample",
+                        summary = "Invalid client type example",
+                        value = "{\"timestamp\":\"2026-10-13T12:00:00Z\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"X-Client-Type: invalid value 'DESKTOP'\"}"
                     )]
                 )]
             ),
@@ -293,35 +298,50 @@ class AuthController(
         ]
     )
     @PostMapping("/login")
-    fun login(@Valid @RequestBody request: LoginRequestDTO): ResponseEntity<AuthResponseDTO> =
-        ResponseEntity.ok(authService.login(request))
+    fun login(
+        @Valid @RequestBody request: LoginRequestDTO,
+        @Parameter(description = CLIENT_TYPE_DESCRIPTION, example = "WEB")
+        @RequestHeader(name = CLIENT_TYPE_HEADER, required = false) clientType: ClientType?,
+    ): ResponseEntity<AuthResponseDTO> {
+        val result = authService.login(request)
+
+        return tokenResponse(
+            clientType = clientType,
+            rawRefreshToken = result.refreshToken!!,
+            mobileBody = result,
+            webBody = result.copy(refreshToken = null),
+        )
+    }
 
     @Operation(
         summary = "Refresh access token",
-        description = "Exchange a valid refresh token for a new access token and a new refresh token. " +
-                "The refresh token used in the request is revoked and must not be reused: " +
-                "reusing it revokes the whole session and requires a new login."
+        description = "Exchange a valid refresh token for a new access token and a new refresh token. Web clients send no body: the refresh token is read from the HttpOnly cookie and the new one is set in the same cookie. Mobile clients (X-Client-Type: MOBILE) send and receive it in the body. The refresh token used is revoked and must not be reused: reusing it revokes the whole session and requires a new login."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200", description = "Ok - Successfully refreshed",
+                headers = [Header(
+                    name = "Set-Cookie",
+                    description = "Web clients only: HttpOnly cookie with the new refresh token",
+                    schema = Schema(type = "string")
+                )],
                 content = [Content(schema = Schema(implementation = RefreshResponseDTO::class))]
             ),
             ApiResponse(
-                responseCode = "400", description = "Bad Request - Invalid request data",
+                responseCode = "400", description = "Bad Request - Invalid request data or client type",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = ErrorResponse::class),
                     examples = [ExampleObject(
                         name = "ValidationErrorExample",
-                        summary = "Validation error example",
+                        summary = "Validation error example (mobile)",
                         value = "{\"timestamp\":\"2026-10-13T12:00:00Z\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"refreshToken: must not be blank\"}"
                     )]
                 )]
             ),
             ApiResponse(
-                responseCode = "401", description = "Unauthorized - Refresh token unknown, expired, revoked or reused: the client must log in again",
+                responseCode = "401", description = "Unauthorized - Refresh token missing, unknown, expired, revoked or reused: the client must log in again",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = ErrorResponse::class),
@@ -351,27 +371,48 @@ class AuthController(
         ]
     )
     @PostMapping("/refresh")
-    fun refresh(@Valid @RequestBody request: RefreshTokenRequestDTO): ResponseEntity<RefreshResponseDTO> =
-        ResponseEntity.ok(authService.refresh(request.refreshToken))
+    fun refresh(
+        @Valid @RequestBody(required = false) request: RefreshTokenRequestDTO?,
+        @Parameter(description = CLIENT_TYPE_DESCRIPTION, example = "WEB")
+        @RequestHeader(name = CLIENT_TYPE_HEADER, required = false) clientType: ClientType?,
+        httpRequest: HttpServletRequest,
+    ): ResponseEntity<RefreshResponseDTO> {
+        val rawRefreshToken = resolveRefreshToken(clientType, request, httpRequest)
+            ?: throw RefreshTokenNotFoundException()
+
+        val result = authService.refresh(rawRefreshToken)
+
+        return tokenResponse(
+            clientType = clientType,
+            rawRefreshToken = result.refreshToken!!,
+            mobileBody = result,
+            webBody = result.copy(refreshToken = null),
+        )
+    }
 
     @Operation(
         summary = "Logout",
-        description = "Revoke the given refresh token. Always returns 204, even if the token is unknown or already revoked."
+        description = "Revoke the current refresh token. Web clients send no body: the token is read from the cookie, and the cookie is always cleared. Mobile clients send the token in the body. Always returns 204, even if the token is missing, unknown or already revoked."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "204", description = "No Content - Successfully logged out",
+                headers = [Header(
+                    name = "Set-Cookie",
+                    description = "Web clients only: expired cookie that removes the refresh token from the browser",
+                    schema = Schema(type = "string")
+                )],
                 content = [Content(schema = Schema(hidden = true))]
             ),
             ApiResponse(
-                responseCode = "400", description = "Bad Request - Invalid request data",
+                responseCode = "400", description = "Bad Request - Invalid request data or client type",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = ErrorResponse::class),
                     examples = [ExampleObject(
                         name = "ValidationErrorExample",
-                        summary = "Validation error example",
+                        summary = "Validation error example (mobile)",
                         value = "{\"timestamp\":\"2026-10-13T12:00:00Z\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"refreshToken: must not be blank\"}"
                     )]
                 )]
@@ -379,19 +420,25 @@ class AuthController(
         ]
     )
     @PostMapping("/logout")
-    fun logout(@Valid @RequestBody request: RefreshTokenRequestDTO): ResponseEntity<Unit> {
-        authService.logout(request.refreshToken)
-        return ResponseEntity.noContent().build()
-    }
+    fun logout(
+        @Valid @RequestBody(required = false) request: RefreshTokenRequestDTO?,
+        @Parameter(description = CLIENT_TYPE_DESCRIPTION, example = "WEB")
+        @RequestHeader(name = CLIENT_TYPE_HEADER, required = false) clientType: ClientType?,
+        httpRequest: HttpServletRequest,
+    ): ResponseEntity<Unit> {
+        resolveRefreshToken(clientType, request, httpRequest)?.let { authService.logout(it) }
 
-    // =========================================================================
-    // Password reset
-    // =========================================================================
+        return when(clientType ?: ClientType.WEB) {
+            ClientType.MOBILE -> ResponseEntity.noContent().build()
+            ClientType.WEB -> ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookies.clear().toString())
+                .build()
+        }
+    }
 
     @Operation(
         summary = "Forgot password",
-        description = "Request a password reset code via email. Always returns 204, whether the account exists or not " +
-                "and whether the resend cooldown is active or not, to avoid revealing registered accounts."
+        description = "Request a password reset code via email. Always returns 204, whether the account exists or not and whether the resend cooldown is active or not, to avoid revealing registered accounts."
     )
     @ApiResponses(
         value = [
@@ -484,4 +531,31 @@ class AuthController(
         authService.resetPassword(request)
         return ResponseEntity.noContent().build()
     }
+
+    private fun resolveRefreshToken(
+        clientType: ClientType?,
+        body: RefreshTokenRequestDTO?,
+        httpRequest: HttpServletRequest,
+    ): String? =
+        when(clientType ?: ClientType.WEB) {
+            ClientType.WEB -> refreshTokenCookies.read(httpRequest)
+            ClientType.MOBILE -> body?.refreshToken
+        }
+
+    private fun <T : Any> tokenResponse(
+        clientType: ClientType?,
+        rawRefreshToken: String,
+        mobileBody: T,
+        webBody: T,
+    ): ResponseEntity<T> =
+        when(clientType ?: ClientType.WEB) {
+            ClientType.MOBILE -> ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(mobileBody)
+
+            ClientType.WEB -> ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookies.create(rawRefreshToken).toString())
+                .body(webBody)
+        }
 }
