@@ -5,11 +5,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.multipart.MaxUploadSizeExceededException
+import org.springframework.web.multipart.support.MissingServletRequestPartException
 import java.time.Instant
 
 @Schema(description = "Standard error response")
@@ -52,7 +55,7 @@ class ExceptionsHandler {
     }
 
     // =========================================================================
-    // Validation and request body
+    // 400 Bad Request
     // =========================================================================
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -68,9 +71,17 @@ class ExceptionsHandler {
     fun handleMalformedBody(ex: HttpMessageNotReadableException) =
         buildResponse(HttpStatus.BAD_REQUEST, "Malformed or incomplete request body")
 
-    // =========================================================================
-    // 400 Bad Request
-    // =========================================================================
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun handleTypeMismatch(ex: MethodArgumentTypeMismatchException) =
+        buildResponse(HttpStatus.BAD_REQUEST, "${ex.name}: invalid value '${ex.value}'")
+
+    @ExceptionHandler(MissingServletRequestParameterException::class)
+    fun handleMissingParameter(ex: MissingServletRequestParameterException) =
+        buildResponse(HttpStatus.BAD_REQUEST, "${ex.parameterName}: is required")
+
+    @ExceptionHandler(MissingServletRequestPartException::class)
+    fun handleMissingPart(ex: MissingServletRequestPartException) =
+        buildResponse(HttpStatus.BAD_REQUEST, "${ex.requestPartName}: is required")
 
     @ExceptionHandler(InvalidOtpException::class)
     fun handleInvalidOtp(ex: InvalidOtpException) =
@@ -88,10 +99,6 @@ class ExceptionsHandler {
     fun handleInvalidGearAttributes(ex: InvalidGearAttributesException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun handleTypeMismatch(ex: MethodArgumentTypeMismatchException) =
-        buildResponse(HttpStatus.BAD_REQUEST, "${ex.name}: invalid value '${ex.value}'")
-
     @ExceptionHandler(InvalidDiveException::class)
     fun handleInvalidDive(ex: InvalidDiveException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
@@ -106,6 +113,10 @@ class ExceptionsHandler {
 
     @ExceptionHandler(InvalidCertificationException::class)
     fun handleInvalidCertification(ex: InvalidCertificationException) =
+        buildResponse(HttpStatus.BAD_REQUEST, ex)
+
+    @ExceptionHandler(EmptyFileException::class)
+    fun handleEmptyFile(ex: EmptyFileException) =
         buildResponse(HttpStatus.BAD_REQUEST, ex)
 
     // =========================================================================
@@ -196,6 +207,14 @@ class ExceptionsHandler {
     fun handleCertificationNotFound(ex: CertificationNotFoundException) =
         buildResponse(HttpStatus.NOT_FOUND, ex)
 
+    @ExceptionHandler(UploadedFileNotFoundException::class)
+    fun handleUploadedFileNotFound(ex: UploadedFileNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler(StorageNotFoundException::class)
+    fun handleStorageNotFound(ex: StorageNotFoundException) =
+        buildResponse(HttpStatus.NOT_FOUND, ex)
+
     // =========================================================================
     // 409 Conflict
     // =========================================================================
@@ -220,6 +239,30 @@ class ExceptionsHandler {
     fun handleDiveSiteInUse(ex: DiveSiteInUseException) =
         buildResponse(HttpStatus.CONFLICT, ex)
 
+    @ExceptionHandler(TooManyFilesException::class)
+    fun handleTooManyFiles(ex: TooManyFilesException) =
+        buildResponse(HttpStatus.CONFLICT, ex)
+
+    // =========================================================================
+    // 413 Payload Too Large
+    // =========================================================================
+
+    @ExceptionHandler(FileTooLargeException::class)
+    fun handleFileTooLarge(ex: FileTooLargeException) =
+        buildResponse(HttpStatus.PAYLOAD_TOO_LARGE, ex)
+
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxUploadSize(ex: MaxUploadSizeExceededException) =
+        buildResponse(HttpStatus.PAYLOAD_TOO_LARGE, "File is too large")
+
+    // =========================================================================
+    // 415 Unsupported Media Type
+    // =========================================================================
+
+    @ExceptionHandler(InvalidFileTypeException::class)
+    fun handleInvalidFileType(ex: InvalidFileTypeException) =
+        buildResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex)
+
     // =========================================================================
     // 429 Too Many Requests
     // =========================================================================
@@ -236,4 +279,24 @@ class ExceptionsHandler {
             .header(HttpHeaders.RETRY_AFTER, ex.secondsRemaining.toString())
             .body(response.body)
     }
+
+    // =========================================================================
+    // 500 Internal Server Error
+    // =========================================================================
+
+    @ExceptionHandler(StorageDeleteException::class)
+    fun handleStorageDelete(ex: StorageDeleteException) =
+        buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex)
+
+    // =========================================================================
+    // 503 Service Unavailable
+    // =========================================================================
+
+    @ExceptionHandler(StorageWriteException::class)
+    fun handleStorageWrite(ex: StorageWriteException) =
+        buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex)
+
+    @ExceptionHandler(StorageReadException::class)
+    fun handleStorageRead(ex: StorageReadException) =
+        buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex)
 }

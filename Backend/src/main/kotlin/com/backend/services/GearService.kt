@@ -2,15 +2,19 @@ package com.backend.services
 
 import com.backend.exceptions.GearNotFoundException
 import com.backend.exceptions.InvalidGearAttributesException
+import com.backend.exceptions.TooManyFilesException
 import com.backend.models.dtos.GearDTO
 import com.backend.models.dtos.GearRequestDTO
+import com.backend.models.dtos.UploadedFileDTO
 import com.backend.models.entities.Gear
+import com.backend.models.enums.FileOwnerType
 import com.backend.models.enums.GearCategory
 import com.backend.repositories.GearRepository
 import com.backend.repositories.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.Instant
 import java.util.UUID
 
@@ -18,9 +22,40 @@ import java.util.UUID
 class GearService(
     private val gearRepository: GearRepository,
     private val userRepository: UserRepository,
+    private val uploadedFileService: UploadedFileService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private companion object {
+        val SIZE = AttributeSpec.TextSpec(maxLength = 20)
+
+        const val MAX_FILES_PER_GEAR = 20
+
+        val ATTRIBUTE_SPECS: Map<GearCategory, Map<String, AttributeSpec>> = mapOf(
+            GearCategory.WETSUIT to mapOf(
+                "thicknessMm" to AttributeSpec.NumberSpec(0.5, 15.0),
+                "style" to AttributeSpec.EnumSpec(setOf("FULL", "SHORTY")),
+            ),
+            GearCategory.SEMIDRYSUIT to mapOf(
+                "thicknessMm" to AttributeSpec.NumberSpec(3.0, 10.0),
+            ),
+            GearCategory.DRYSUIT to mapOf(
+                "material" to AttributeSpec.EnumSpec(setOf("TRILAMINATE", "NEOPRENE")),
+            ),
+            GearCategory.WEIGHTS to mapOf(
+                "kg" to AttributeSpec.NumberSpec(0.0, 40.0),
+            ),
+            GearCategory.REGULATOR to mapOf(
+                "stage" to AttributeSpec.EnumSpec(setOf("FIRST", "SECOND", "SET")),
+            ),
+            GearCategory.BCD to mapOf("size" to SIZE),
+            GearCategory.FINS to mapOf("size" to SIZE),
+            GearCategory.MASK to mapOf("size" to SIZE),
+            GearCategory.GLOVES to mapOf("size" to SIZE),
+            GearCategory.BOOTS to mapOf("size" to SIZE),
+        )
+    }
 
     @Transactional(readOnly = true)
     fun listGear(ownerId: UUID, category: GearCategory?, includeArchived: Boolean): List<GearDTO> {
@@ -163,6 +198,8 @@ class GearService(
 
         try {
             val gear = findOwnedGear(ownerId, gearId)
+
+            uploadedFileService.deleteAllForOwner(FileOwnerType.GEAR, gearId)
             gearRepository.delete(gear)
 
             logger.info("\n\t[INFO] [gear_service][delete_gear] Gear {} deleted for user {}", gearId, ownerId)
@@ -175,38 +212,33 @@ class GearService(
         }
     }
 
+    @Transactional(readOnly = true)
+    fun listFiles(ownerId: UUID, gearId: UUID): List<UploadedFileDTO> {
+        findOwnedGear(ownerId, gearId)
+        return uploadedFileService.listFiles(FileOwnerType.GEAR, gearId)
+    }
+
+    @Transactional
+    fun addFile(ownerId: UUID, gearId: UUID, file: MultipartFile): UploadedFileDTO {
+        findOwnedGear(ownerId, gearId)
+
+        if(uploadedFileService.countFiles(FileOwnerType.GEAR, gearId) >= MAX_FILES_PER_GEAR) {
+            throw TooManyFilesException(MAX_FILES_PER_GEAR)
+        }
+
+        return uploadedFileService.uploadFile(ownerId, FileOwnerType.GEAR, gearId, file)
+    }
+
+    @Transactional
+    fun deleteFile(ownerId: UUID, gearId: UUID, fileId: UUID) {
+        findOwnedGear(ownerId, gearId)
+        uploadedFileService.deleteResourceFile(ownerId, FileOwnerType.GEAR, gearId, fileId)
+    }
+
     private sealed interface AttributeSpec {
         data class NumberSpec(val min: Double, val max: Double) : AttributeSpec
         data class EnumSpec(val allowed: Set<String>) : AttributeSpec
         data class TextSpec(val maxLength: Int) : AttributeSpec
-    }
-
-    private companion object {
-        val SIZE = AttributeSpec.TextSpec(maxLength = 20)
-
-        val ATTRIBUTE_SPECS: Map<GearCategory, Map<String, AttributeSpec>> = mapOf(
-            GearCategory.WETSUIT to mapOf(
-                "thicknessMm" to AttributeSpec.NumberSpec(0.5, 15.0),
-                "style" to AttributeSpec.EnumSpec(setOf("FULL", "SHORTY")),
-            ),
-            GearCategory.SEMIDRYSUIT to mapOf(
-                "thicknessMm" to AttributeSpec.NumberSpec(3.0, 10.0),
-            ),
-            GearCategory.DRYSUIT to mapOf(
-                "material" to AttributeSpec.EnumSpec(setOf("TRILAMINATE", "NEOPRENE")),
-            ),
-            GearCategory.WEIGHTS to mapOf(
-                "kg" to AttributeSpec.NumberSpec(0.0, 40.0),
-            ),
-            GearCategory.REGULATOR to mapOf(
-                "stage" to AttributeSpec.EnumSpec(setOf("FIRST", "SECOND", "SET")),
-            ),
-            GearCategory.BCD to mapOf("size" to SIZE),
-            GearCategory.FINS to mapOf("size" to SIZE),
-            GearCategory.MASK to mapOf("size" to SIZE),
-            GearCategory.GLOVES to mapOf("size" to SIZE),
-            GearCategory.BOOTS to mapOf("size" to SIZE),
-        )
     }
 
     private fun validateAttributes(category: GearCategory, attributes: Map<String, Any?>): Map<String, Any?> {

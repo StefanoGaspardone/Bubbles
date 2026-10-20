@@ -64,8 +64,26 @@ class DiveSiteInUseException(val diveCount: Long): RuntimeException("Dive site i
 
 class InvalidDiveSiteException(message: String): RuntimeException(message)
 
-class InvalidPaginationException(message: String): RuntimeException(message)
-
 class CertificationNotFoundException(val certificationId: UUID): RuntimeException("Certification not found")
 
 class InvalidCertificationException(message: String): RuntimeException(message)
+
+class InvalidPaginationException(message: String): RuntimeException(message)
+
+class EmptyFileException: RuntimeException("File is empty")
+
+class FileTooLargeException(val maxSizeBytes: Long): RuntimeException("File is too large: maximum size is ${maxSizeBytes / (1024 * 1024)} MB")
+
+class InvalidFileTypeException(message: String): RuntimeException(message)
+
+class UploadedFileNotFoundException(val fileId: UUID): RuntimeException("File not found")
+
+class StorageWriteException(val objectKey: String): RuntimeException("Unable to store the file, please try again later")
+
+class StorageReadException(val objectKey: String): RuntimeException("File temporarily unavailable, please try again later")
+
+class StorageNotFoundException(val objectKey: String): RuntimeException("File not found")
+
+class StorageDeleteException(val objectKey: String): RuntimeException("Unable to delete the file")
+
+class TooManyFilesException(val max: Int): RuntimeException("Maximum number of files reached ($max)")

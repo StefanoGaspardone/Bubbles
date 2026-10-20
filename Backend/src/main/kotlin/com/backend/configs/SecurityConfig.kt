@@ -7,6 +7,7 @@ import org.aopalliance.intercept.MethodInvocation
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.authorization.AuthorizationManagerFactory
@@ -59,6 +60,7 @@ class SecurityConfig(
                     .requestMatchers("/terms.html").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/health").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/files/*/content").permitAll()
                     .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             }

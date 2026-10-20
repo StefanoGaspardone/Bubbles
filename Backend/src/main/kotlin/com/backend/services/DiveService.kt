@@ -5,6 +5,7 @@ import com.backend.exceptions.DiveOverlapException
 import com.backend.exceptions.DiveSiteNotFoundException
 import com.backend.exceptions.InvalidDiveException
 import com.backend.exceptions.InvalidPaginationException
+import com.backend.exceptions.TooManyFilesException
 import com.backend.models.dtos.DiveBuddySelectionDTO
 import com.backend.models.dtos.DiveConfirmationDTO
 import com.backend.models.dtos.DiveDTO
@@ -12,6 +13,7 @@ import com.backend.models.dtos.DiveGearSelectionDTO
 import com.backend.models.dtos.DiveRequestDTO
 import com.backend.models.dtos.DiveSummaryDTO
 import com.backend.models.dtos.PageDTO
+import com.backend.models.dtos.UploadedFileDTO
 import com.backend.models.dtos.toPageDTO
 import com.backend.models.entities.Dive
 import com.backend.models.entities.DiveBuddy
@@ -21,6 +23,7 @@ import com.backend.models.entities.DiveSite
 import com.backend.models.entities.DiveTank
 import com.backend.models.enums.AccountStatus
 import com.backend.models.enums.DiveSegmentType
+import com.backend.models.enums.FileOwnerType
 import com.backend.models.events.BuddyNotification
 import com.backend.models.events.BuddyNotificationReason
 import com.backend.models.events.BuddyNotificationsEvent
@@ -36,6 +39,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.DateTimeException
 import java.time.Duration
 import java.time.Instant
@@ -50,6 +54,7 @@ class DiveService(
     private val diveBuddyRepository: DiveBuddyRepository,
     private val gearRepository: GearRepository,
     private val userRepository: UserRepository,
+    private val uploadedFileService: UploadedFileService,
     private val eventPublisher: ApplicationEventPublisher,
 ) {
 
@@ -64,6 +69,7 @@ class DiveService(
         const val SEGMENTS_DURATION_TOLERANCE_SECONDS = 120L
         const val DEPTH_TOLERANCE_M = 0.5
         const val OVERLAP_CONSTRAINT = "ex_dives_no_overlap"
+        const val MAX_PHOTOS_PER_DIVE = 20
 
         val TRANSITION_SEGMENTS = setOf(DiveSegmentType.DESCENT, DiveSegmentType.ASCENT, DiveSegmentType.SURFACE)
     }
@@ -233,6 +239,8 @@ class DiveService(
 
         try {
             val dive = findOwnedDive(ownerId, diveId)
+
+            uploadedFileService.deleteAllForOwner(FileOwnerType.DIVE_PHOTO, diveId)
             diveRepository.delete(dive)
 
             logger.info("\n\t[INFO] [dive_service][delete_dive] Dive {} deleted for user {}", diveId, ownerId)
@@ -264,6 +272,29 @@ class DiveService(
             logger.error("\n\t[ERROR] [dive_service][confirm_dive] Error confirming dive {} by user {}: {}", diveId, buddyUserId, e.message)
             throw e
         }
+    }
+
+    @Transactional(readOnly = true)
+    fun listPhotos(ownerId: UUID, diveId: UUID): List<UploadedFileDTO> {
+        findOwnedDive(ownerId, diveId)
+        return uploadedFileService.listFiles(FileOwnerType.DIVE_PHOTO, diveId)
+    }
+
+    @Transactional
+    fun addPhoto(ownerId: UUID, diveId: UUID, file: MultipartFile): UploadedFileDTO {
+        findOwnedDive(ownerId, diveId)
+
+        if(uploadedFileService.countFiles(FileOwnerType.DIVE_PHOTO, diveId) >= MAX_PHOTOS_PER_DIVE) {
+            throw TooManyFilesException(MAX_PHOTOS_PER_DIVE)
+        }
+
+        return uploadedFileService.uploadFile(ownerId, FileOwnerType.DIVE_PHOTO, diveId, file)
+    }
+
+    @Transactional
+    fun deletePhoto(ownerId: UUID, diveId: UUID, fileId: UUID) {
+        findOwnedDive(ownerId, diveId)
+        uploadedFileService.deleteResourceFile(ownerId, FileOwnerType.DIVE_PHOTO, diveId, fileId)
     }
 
     private fun validateRequest(request: DiveRequestDTO): DiveTimes {

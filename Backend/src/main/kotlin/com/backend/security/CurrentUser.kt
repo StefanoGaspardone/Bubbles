@@ -12,6 +12,9 @@ object CurrentUser {
             ?: throw IllegalStateException("Current principal does not carry a user id")
     }
 
+    fun idOrNull(): UUID? =
+        (SecurityContextHolder.getContext().authentication?.principal as? JwtUserPrincipal)?.userId
+
     fun role(): String {
         val principal = authenticationOrThrow().principal
         return (principal as? JwtUserPrincipal)?.role

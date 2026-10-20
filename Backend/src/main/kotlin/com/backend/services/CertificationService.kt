@@ -6,12 +6,15 @@ import com.backend.models.dtos.CertificationDTO
 import com.backend.models.dtos.CertificationRequestDTO
 import com.backend.models.entities.Certification
 import com.backend.models.enums.CertificationAgency
+import com.backend.models.enums.CertificationAttachmentSlot
 import com.backend.models.enums.CertificationType
+import com.backend.models.enums.FileOwnerType
 import com.backend.repositories.CertificationRepository
 import com.backend.repositories.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 import java.util.UUID
 
@@ -19,6 +22,7 @@ import java.util.UUID
 class CertificationService(
     private val certificationRepository: CertificationRepository,
     private val userRepository: UserRepository,
+    private val uploadedFileService: UploadedFileService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -134,6 +138,8 @@ class CertificationService(
 
         try {
             val certification = findOwnedCertification(ownerId, certificationId)
+
+            uploadedFileService.deleteAllForOwner(FileOwnerType.CERTIFICATION, certificationId)
             certificationRepository.delete(certification)
 
             logger.info("\n\t[INFO] [certification_service][delete_certification] Certification {} deleted for user {}", certificationId, ownerId)
@@ -143,6 +149,61 @@ class CertificationService(
         } catch(e: Exception) {
             logger.error("\n\t[ERROR] [certification_service][delete_certification] Error deleting certification {} for user {}: {}", certificationId, ownerId, e.message)
             throw e
+        }
+    }
+
+    @Transactional
+    fun setAttachment(ownerId: UUID, certificationId: UUID, slot: CertificationAttachmentSlot, file: MultipartFile): CertificationDTO {
+        logger.debug("\n\t[DEBUG] [certification_service][set_attachment] Setting {} for certification {}", slot, certificationId)
+
+        try {
+            val certification = findOwnedCertification(ownerId, certificationId)
+            val previousFileId = certification.attachmentId(slot)
+
+            val uploaded = uploadedFileService.uploadFile(
+                ownerUserId = ownerId,
+                ownerType = FileOwnerType.CERTIFICATION,
+                ownerId = certificationId,
+                file = file,
+                allowedFormats = slot.allowedFormats,
+            )
+            certification.setAttachmentId(slot, uploaded.id)
+
+            previousFileId?.let { uploadedFileService.deleteFileIfPresent(ownerId, it) }
+
+            logger.info("\n\t[INFO] [certification_service][set_attachment] {} set for certification {}", slot, certificationId)
+            return CertificationDTO.from(certification)
+        } catch(e: CertificationNotFoundException) {
+            logger.warn("\n\t[WARN] [certification_service][set_attachment] Certification {} not found for user {}", certificationId, ownerId)
+            throw e
+        } catch(e: Exception) {
+            logger.error("\n\t[ERROR] [certification_service][set_attachment] Error setting {} for certification {}: {}", slot, certificationId, e.message)
+            throw e
+        }
+    }
+
+    @Transactional
+    fun removeAttachment(ownerId: UUID, certificationId: UUID, slot: CertificationAttachmentSlot) {
+        val certification = findOwnedCertification(ownerId, certificationId)
+        val fileId = certification.attachmentId(slot) ?: return
+
+        certification.setAttachmentId(slot, null)
+        uploadedFileService.deleteFileIfPresent(ownerId, fileId)
+
+        logger.info("\n\t[INFO] [certification_service][remove_attachment] {} removed from certification {}", slot, certificationId)
+    }
+
+    private fun Certification.attachmentId(slot: CertificationAttachmentSlot): UUID? = when(slot) {
+        CertificationAttachmentSlot.FRONT -> frontImageId
+        CertificationAttachmentSlot.BACK -> backImageId
+        CertificationAttachmentSlot.DOCUMENT -> documentId
+    }
+
+    private fun Certification.setAttachmentId(slot: CertificationAttachmentSlot, fileId: UUID?) {
+        when(slot) {
+            CertificationAttachmentSlot.FRONT -> frontImageId = fileId
+            CertificationAttachmentSlot.BACK -> backImageId = fileId
+            CertificationAttachmentSlot.DOCUMENT -> documentId = fileId
         }
     }
 

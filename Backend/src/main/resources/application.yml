@@ -11,8 +11,8 @@ spring:
       enabled: true
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 15MB
+      max-request-size: 16MB
 
 # ============================================================
 # MAIL CONFIGURATION
@@ -101,6 +101,7 @@ s3:
   secret-key: ${S3_SECRET_KEY:minioadmin}
   bucket: ${S3_BUCKET:uploads}
   region: ${S3_REGION:eu-central-1}
+  publicEndpoint: ${S3_PUBLIC_ENDPOINT:http://localhost:9000}
 
 # ============================================================
 # CORS CONFIGURATION

@@ -50,7 +50,7 @@ services:
       - minio_data:/data
 
   # ============================================
-  # MAIL
+  # EMAIL
   # ============================================
   mailpit:
     image: axllent/mailpit:latest

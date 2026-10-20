@@ -25,3 +25,9 @@ enum class CertificationType {
     INSURANCE,
     OTHER,
 }
+
+enum class CertificationAttachmentSlot(val allowedFormats: Set<FileFormat>) {
+    FRONT(setOf(FileFormat.JPEG, FileFormat.PNG, FileFormat.WEBP)),
+    BACK(setOf(FileFormat.JPEG, FileFormat.PNG, FileFormat.WEBP)),
+    DOCUMENT(setOf(FileFormat.PDF)),
+}

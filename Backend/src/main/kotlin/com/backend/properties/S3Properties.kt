@@ -11,4 +11,5 @@ class S3Properties {
     lateinit var secretKey: String
     lateinit var bucket: String
     lateinit var region: String
+    lateinit var publicEndpoint: String
 }

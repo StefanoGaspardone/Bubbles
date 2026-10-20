@@ -7,6 +7,7 @@ import com.backend.exceptions.UsernameAlreadyTakenException
 import com.backend.models.dtos.*
 import com.backend.models.entities.User
 import com.backend.models.enums.AccountStatus
+import com.backend.models.enums.FileOwnerType
 import com.backend.models.specifications.UserSpecification
 import com.backend.repositories.*
 import org.slf4j.LoggerFactory
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.Instant
 import java.util.*
 
@@ -28,6 +30,7 @@ class UserService(
     private val diveSiteRepository: DiveSiteRepository,
     private val gearRepository: GearRepository,
     private val certificationRepository: CertificationRepository,
+    private val uploadedFileService: UploadedFileService,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
@@ -113,8 +116,10 @@ class UserService(
             user.markDeleted()
 
             val revoked = refreshTokenRepository.revokeAllByUserId(userId, now)
+
             emailVerificationRepository.deleteByUserId(userId)
             passwordResetRepository.deleteByUserId(userId)
+            uploadedFileService.deleteAllForUser(userId)
 
             logger.info("\n\t[INFO] [user_service][delete_account] Account {} deleted: {} dives, {} sites, {} gear, {} certifications removed, {} sessions revoked", userId, deletedDives, deletedSites, deletedGear, deletedCertifications, revoked)
         } catch(e: UserNotFoundException) {
@@ -152,6 +157,45 @@ class UserService(
             throw e
         } catch(e: Exception) {
             logger.error("\n\t[ERROR] [user_service][list_users] Error listing users: {}", e.message)
+            throw e
+        }
+    }
+
+    @Transactional
+    fun setAvatar(userId: UUID, file: MultipartFile): UserDTO {
+        logger.debug("\n\t[DEBUG] [user_service][set_avatar] Setting avatar for user {}", userId)
+
+        try {
+            val user = findUser(userId)
+            val previousAvatarId = user.avatarId
+
+            val uploaded = uploadedFileService.uploadFile(userId, FileOwnerType.USER_AVATAR, userId, file)
+            user.avatarId = uploaded.id
+
+            previousAvatarId?.let { uploadedFileService.deleteFileIfPresent(userId, it) }
+
+            logger.info("\n\t[INFO] [user_service][set_avatar] Avatar {} set for user {}", uploaded.id, userId)
+            return UserDTO.from(user)
+        } catch(e: Exception) {
+            logger.error("\n\t[ERROR] [user_service][set_avatar] Error setting avatar for user {}: {}", userId, e.message)
+            throw e
+        }
+    }
+
+    @Transactional
+    fun removeAvatar(userId: UUID) {
+        logger.debug("\n\t[DEBUG] [user_service][remove_avatar] Removing avatar for user {}", userId)
+
+        try {
+            val user = findUser(userId)
+            val avatarId = user.avatarId ?: return
+
+            user.avatarId = null
+            uploadedFileService.deleteFileIfPresent(userId, avatarId)
+
+            logger.info("\n\t[INFO] [user_service][remove_avatar] Avatar removed for user {}", userId)
+        } catch(e: Exception) {
+            logger.error("\n\t[ERROR] [user_service][remove_avatar] Error removing avatar for user {}: {}", userId, e.message)
             throw e
         }
     }
