@@ -1,0 +1,249 @@
+{
+	"source": "FIPSAS/DAN 2017 - Tabella 1: tabella di decompressione, ARIA",
+	"description": "Per ogni profondità (m), i tempi di immersione (min) con il F.A.R. di uscita e i minuti di decompressione a 6 m. Le caselle vuote della card non sono riportate: si sceglie la prima riga con tempo uguale o superiore. time null = illimitato. noDecoLimit = tempo limite in curva di sicurezza (null = illimitato).",
+	"descentRateMPerMin": 23,
+	"ascentRateMPerMin": 9,
+	"decoStopDepthM": 6,
+	"depths": [
+		{
+			"depthM": 6,
+			"noDecoLimit": null,
+			"rows": [
+				{ "far": "A", "time": 26 },
+				{ "far": "B", "time": 43 },
+				{ "far": "C", "time": 61 },
+				{ "far": "D", "time": 82 },
+				{ "far": "E", "time": 106 },
+				{ "far": "F", "time": 133 },
+				{ "far": "G", "time": 165 },
+				{ "far": "H", "time": 205 },
+				{ "far": "I", "time": 256 },
+				{ "far": "J", "time": 330 },
+				{ "far": "K", "time": 461 },
+				{ "far": "L", "time": null }
+			]
+		},
+		{
+			"depthM": 9,
+			"noDecoLimit": 371,
+			"rows": [
+				{ "far": "A", "time": 17 },
+				{ "far": "B", "time": 27 },
+				{ "far": "C", "time": 38 },
+				{ "far": "D", "time": 50 },
+				{ "far": "E", "time": 62 },
+				{ "far": "F", "time": 76 },
+				{ "far": "G", "time": 91 },
+				{ "far": "H", "time": 107 },
+				{ "far": "I", "time": 125 },
+				{ "far": "J", "time": 145 },
+				{ "far": "K", "time": 167 },
+				{ "far": "L", "time": 193 },
+				{ "far": "M", "time": 223 },
+				{ "far": "N", "time": 260 },
+				{ "far": "O", "time": 307 },
+				{ "far": "Z", "time": 371 }
+			]
+		},
+		{
+			"depthM": 12,
+			"noDecoLimit": 163,
+			"rows": [
+				{ "far": "A", "time": 12 },
+				{ "far": "B", "time": 20 },
+				{ "far": "C", "time": 27 },
+				{ "far": "D", "time": 36 },
+				{ "far": "E", "time": 44 },
+				{ "far": "F", "time": 53 },
+				{ "far": "G", "time": 63 },
+				{ "far": "H", "time": 73 },
+				{ "far": "I", "time": 84 },
+				{ "far": "J", "time": 95 },
+				{ "far": "K", "time": 108 },
+				{ "far": "L", "time": 121 },
+				{ "far": "M", "time": 135 },
+				{ "far": "N", "time": 151 },
+				{ "far": "O", "time": 163 },
+				{ "far": "Z", "time": 180, "deco": 14 }
+			]
+		},
+		{
+			"depthM": 15,
+			"noDecoLimit": 92,
+			"rows": [
+				{ "far": "A", "time": 9 },
+				{ "far": "B", "time": 15 },
+				{ "far": "C", "time": 21 },
+				{ "far": "D", "time": 28 },
+				{ "far": "E", "time": 34 },
+				{ "far": "F", "time": 41 },
+				{ "far": "G", "time": 48 },
+				{ "far": "H", "time": 56 },
+				{ "far": "I", "time": 63 },
+				{ "far": "J", "time": 71 },
+				{ "far": "K", "time": 80 },
+				{ "far": "L", "time": 89 },
+				{ "far": "M", "time": 92 },
+				{ "far": "N", "time": 100, "deco": 4 },
+				{ "far": "O", "time": 110, "deco": 8 }
+			]
+		},
+		{
+			"depthM": 18,
+			"noDecoLimit": 63,
+			"rows": [
+				{ "far": "A", "time": 7 },
+				{ "far": "B", "time": 12 },
+				{ "far": "C", "time": 17 },
+				{ "far": "D", "time": 22 },
+				{ "far": "E", "time": 28 },
+				{ "far": "F", "time": 33 },
+				{ "far": "G", "time": 39 },
+				{ "far": "H", "time": 45 },
+				{ "far": "I", "time": 51 },
+				{ "far": "J", "time": 57 },
+				{ "far": "K", "time": 63 },
+				{ "far": "L", "time": 70, "deco": 7 },
+				{ "far": "N", "time": 80, "deco": 14 }
+			]
+		},
+		{
+			"depthM": 21,
+			"noDecoLimit": 48,
+			"rows": [
+				{ "far": "A", "time": 6 },
+				{ "far": "B", "time": 10 },
+				{ "far": "C", "time": 14 },
+				{ "far": "D", "time": 19 },
+				{ "far": "E", "time": 23 },
+				{ "far": "F", "time": 28 },
+				{ "far": "G", "time": 32 },
+				{ "far": "H", "time": 37 },
+				{ "far": "I", "time": 42 },
+				{ "far": "J", "time": 47 },
+				{ "far": "K", "time": 48 },
+				{ "far": "L", "time": 55, "deco": 9 },
+				{ "far": "M", "time": 60, "deco": 14 }
+			]
+		},
+		{
+			"depthM": 24,
+			"noDecoLimit": 39,
+			"rows": [
+				{ "far": "A", "time": 5 },
+				{ "far": "B", "time": 9 },
+				{ "far": "C", "time": 12 },
+				{ "far": "D", "time": 16 },
+				{ "far": "E", "time": 20 },
+				{ "far": "F", "time": 24 },
+				{ "far": "G", "time": 28 },
+				{ "far": "H", "time": 32 },
+				{ "far": "I", "time": 36 },
+				{ "far": "J", "time": 39 },
+				{ "far": "K", "time": 45, "deco": 10 }
+			]
+		},
+		{
+			"depthM": 27,
+			"noDecoLimit": 33,
+			"rows": [
+				{ "far": "A", "time": 4 },
+				{ "far": "B", "time": 7 },
+				{ "far": "C", "time": 11 },
+				{ "far": "D", "time": 14 },
+				{ "far": "E", "time": 17 },
+				{ "far": "F", "time": 21 },
+				{ "far": "G", "time": 24 },
+				{ "far": "H", "time": 28 },
+				{ "far": "I", "time": 31 },
+				{ "far": "J", "time": 33 },
+				{ "far": "L", "time": 40, "deco": 14 }
+			]
+		},
+		{
+			"depthM": 30,
+			"noDecoLimit": 25,
+			"rows": [
+				{ "far": "A", "time": 4 },
+				{ "far": "B", "time": 6 },
+				{ "far": "C", "time": 9 },
+				{ "far": "D", "time": 12 },
+				{ "far": "E", "time": 15 },
+				{ "far": "F", "time": 18 },
+				{ "far": "G", "time": 21 },
+				{ "far": "H", "time": 25 },
+				{ "far": "J", "time": 30, "deco": 3 },
+				{ "far": "L", "time": 35, "deco": 15 }
+			]
+		},
+		{
+			"depthM": 33,
+			"noDecoLimit": 20,
+			"rows": [
+				{ "far": "A", "time": 3 },
+				{ "far": "B", "time": 6 },
+				{ "far": "C", "time": 8 },
+				{ "far": "D", "time": 11 },
+				{ "far": "E", "time": 14 },
+				{ "far": "F", "time": 16 },
+				{ "far": "G", "time": 19 },
+				{ "far": "H", "time": 20 },
+				{ "far": "I", "time": 25, "deco": 5 },
+				{ "far": "K", "time": 30, "deco": 14 }
+			]
+		},
+		{
+			"depthM": 36,
+			"noDecoLimit": 15,
+			"rows": [
+				{ "far": "A", "time": 3 },
+				{ "far": "B", "time": 5 },
+				{ "far": "C", "time": 7 },
+				{ "far": "D", "time": 10 },
+				{ "far": "E", "time": 12 },
+				{ "far": "F", "time": 15 },
+				{ "far": "H", "time": 20, "deco": 4 },
+				{ "far": "J", "time": 25, "deco": 9 }
+			]
+		},
+		{
+			"depthM": 39,
+			"noDecoLimit": 12,
+			"rows": [
+				{ "far": "A", "time": 2 },
+				{ "far": "B", "time": 4 },
+				{ "far": "C", "time": 6 },
+				{ "far": "D", "time": 9 },
+				{ "far": "E", "time": 11 },
+				{ "far": "F", "time": 12 },
+				{ "far": "G", "time": 15, "deco": 3 },
+				{ "far": "I", "time": 20, "deco": 8 }
+			]
+		},
+		{
+			"depthM": 42,
+			"noDecoLimit": 10,
+			"rows": [
+				{ "far": "A", "time": 2 },
+				{ "far": "B", "time": 4 },
+				{ "far": "C", "time": 6 },
+				{ "far": "D", "time": 8 },
+				{ "far": "E", "time": 10 },
+				{ "far": "H", "time": 15, "deco": 5 },
+				{ "far": "J", "time": 20, "deco": 13 }
+			]
+		},
+		{
+			"depthM": 45,
+			"noDecoLimit": 8,
+			"rows": [
+				{ "far": "B", "time": 3 },
+				{ "far": "C", "time": 5 },
+				{ "far": "D", "time": 7 },
+				{ "far": "E", "time": 8 },
+				{ "far": "F", "time": 10, "deco": 2 },
+				{ "far": "H", "time": 15, "deco": 8 }
+			]
+		}
+	]
+}
