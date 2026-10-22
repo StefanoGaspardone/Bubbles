@@ -1,0 +1,31 @@
+{
+	"$comment": "keep: termini da non tradurre mai. terms: traduzione obbligata per lingua (glossario DeepL). Chiavi in italiano, come nel codice.",
+	"keep": [
+		"Bubbles",
+		"FIPSAS",
+		"DAN",
+		"DAN Europe",
+		"F.A.R.",
+		"Bühlmann",
+		"GitHub",
+		"Nitrox",
+		"QR code"
+	],
+	"terms": {
+		"in curva": { "en": "within no-deco limits", "de": "innerhalb der Nullzeit", "fr": "dans la courbe", "es": "dentro de la curva" },
+		"fuori curva": { "en": "beyond no-deco limits", "de": "außerhalb der Nullzeit", "fr": "hors courbe", "es": "fuera de la curva" },
+		"sosta di sicurezza": { "en": "safety stop", "de": "Sicherheitsstopp", "fr": "palier de sécurité", "es": "parada de seguridad" },
+		"sosta di decompressione": { "en": "decompression stop", "de": "Dekompressionsstopp", "fr": "palier de décompression", "es": "parada de descompresión" },
+		"sosta profonda": { "en": "deep stop", "de": "Deep Stop", "fr": "palier profond", "es": "parada profunda" },
+		"tempo di fondo": { "en": "bottom time", "de": "Grundzeit", "fr": "temps au fond", "es": "tiempo de fondo" },
+		"intervallo di superficie": { "en": "surface interval", "de": "Oberflächenpause", "fr": "intervalle de surface", "es": "intervalo en superficie" },
+		"immersione ripetitiva": { "en": "repetitive dive", "de": "Wiederholungstauchgang", "fr": "plongée successive", "es": "inmersión sucesiva" },
+		"brevetto": { "en": "certification", "de": "Brevet", "fr": "brevet", "es": "titulación" },
+		"brevetti": { "en": "certifications", "de": "Brevets", "fr": "brevets", "es": "titulaciones" },
+		"compagni": { "en": "buddies", "de": "Tauchpartner", "fr": "binômes", "es": "compañeros" },
+		"compagni di immersione": { "en": "dive buddies", "de": "Tauchpartner", "fr": "binômes de plongée", "es": "compañeros de buceo" },
+		"logbook": { "en": "logbook", "de": "Logbuch", "fr": "carnet de plongée", "es": "bitácora" },
+		"attrezzatura": { "en": "gear", "de": "Ausrüstung", "fr": "équipement", "es": "equipo" },
+		"bombole": { "en": "tanks", "de": "Flaschen", "fr": "blocs", "es": "botellas" }
+	}
+}

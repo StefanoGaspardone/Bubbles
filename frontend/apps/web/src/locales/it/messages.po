@@ -1,0 +1,364 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-22 18:51+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: it\n"
+
+#: src/components/common/site-footer.tsx:62
+msgid "(si apre in una nuova scheda)"
+msgstr "(si apre in una nuova scheda)"
+
+#: src/components/common/site-footer.tsx:111
+msgid "© {year} Bubbles · Realizzato da <0>{AUTHOR}</0>"
+msgstr "© {year} Bubbles · Realizzato da <0>{AUTHOR}</0>"
+
+#: src/components/common/site-footer.tsx:32
+#: src/pages/auth/login-page.tsx:101
+#: src/pages/landing-page.tsx:61
+msgid "Accedi"
+msgstr "Accedi"
+
+#: src/pages/auth/login-page.tsx:67
+msgid "Accedi per ritrovare il tuo logbook."
+msgstr "Accedi per ritrovare il tuo logbook."
+
+#: src/pages/auth/login-page.tsx:101
+msgid "Accesso in corso…"
+msgstr "Accesso in corso…"
+
+#: src/pages/landing-page.tsx:31
+msgid "Aggiungi i compagni di immersione e fai confermare l'immersione con un QR code."
+msgstr "Aggiungi i compagni di immersione e fai confermare l'immersione con un QR code."
+
+#: src/schemas/auth.ts:26
+msgid "Al massimo 255 caratteri"
+msgstr "Al massimo 255 caratteri"
+
+#: src/schemas/auth.ts:18
+#: src/schemas/auth.ts:19
+#: src/schemas/auth.ts:24
+msgid "Al massimo 50 caratteri"
+msgstr "Al massimo 50 caratteri"
+
+#: src/schemas/auth.ts:9
+msgid "Al massimo 72 caratteri"
+msgstr "Al massimo 72 caratteri"
+
+#: src/schemas/auth.ts:23
+msgid "Almeno 3 caratteri"
+msgstr "Almeno 3 caratteri"
+
+#: src/schemas/auth.ts:8
+msgid "Almeno 8 caratteri"
+msgstr "Almeno 8 caratteri"
+
+#: src/pages/auth/signup-page.tsx:95
+msgid "Almeno 8 caratteri."
+msgstr "Almeno 8 caratteri."
+
+#: src/components/common/site-footer.tsx:30
+msgid "App"
+msgstr "App"
+
+#: src/pages/auth/login-page.tsx:60
+msgid "Attivalo con il codice ricevuto via email"
+msgstr "Attivalo con il codice ricevuto via email"
+
+#: src/lib/navigation.ts:32
+#: src/pages/landing-page.tsx:40
+msgid "Attrezzatura"
+msgstr "Attrezzatura"
+
+#: src/pages/auth/login-page.tsx:67
+msgid "Bentornato"
+msgstr "Bentornato"
+
+#: src/lib/navigation.ts:33
+#: src/pages/landing-page.tsx:45
+msgid "Brevetti"
+msgstr "Brevetti"
+
+#: src/pages/landing-page.tsx:26
+msgid "Calcolo con le tabelle FIPSAS/DAN e con il modello Bühlmann."
+msgstr "Calcolo con le tabelle FIPSAS/DAN e con il modello Bühlmann."
+
+#: src/components/common/user-menu.tsx:16
+msgid "Chiaro"
+msgstr "Chiaro"
+
+#: src/pages/auth/signup-page.tsx:73
+msgid "Cognome"
+msgstr "Cognome"
+
+#: src/lib/navigation.ts:26
+#: src/pages/landing-page.tsx:30
+msgid "Compagni"
+msgstr "Compagni"
+
+#: src/pages/auth/signup-page.tsx:98
+msgid "Conferma password"
+msgstr "Conferma password"
+
+#: src/pages/auth/signup-page.tsx:103
+msgid "Crea account"
+msgstr "Crea account"
+
+#: src/pages/auth/signup-page.tsx:48
+msgid "Crea il tuo account"
+msgstr "Crea il tuo account"
+
+#: src/pages/auth/signup-page.tsx:103
+msgid "Creazione account…"
+msgstr "Creazione account…"
+
+#: src/pages/auth/signup-page.tsx:86
+msgid "Email"
+msgstr "Email"
+
+#: src/pages/auth/signup-page.tsx:38
+msgid "Email già registrata"
+msgstr "Email già registrata"
+
+#: src/schemas/auth.ts:26
+msgid "Email non valida"
+msgstr "Email non valida"
+
+#: src/pages/auth/login-page.tsx:86
+msgid "Email o username"
+msgstr "Email o username"
+
+#: src/pages/auth/login-page.tsx:41
+msgid "Email, username o password non corretti."
+msgstr "Email, username o password non corretti."
+
+#: src/lib/navigation.ts:30
+msgid "Equipaggiamento"
+msgstr "Equipaggiamento"
+
+#: src/lib/errors.ts:17
+msgid "Errore del server. Riprova tra poco."
+msgstr "Errore del server. Riprova tra poco."
+
+#: src/components/common/user-menu.tsx:105
+msgid "Esci"
+msgstr "Esci"
+
+#: src/pages/auth/signup-page.tsx:50
+msgid "Hai già un account? <0>Accedi</0>"
+msgstr "Hai già un account? <0>Accedi</0>"
+
+#: src/pages/landing-page.tsx:78
+msgid "Ho già un account"
+msgstr "Ho già un account"
+
+#: src/lib/navigation.ts:23
+msgid "Home"
+msgstr "Home"
+
+#: src/pages/landing-page.tsx:36
+msgid "I tuoi punti di immersione, con le immersioni fatte in ognuno."
+msgstr "I tuoi punti di immersione, con le immersioni fatte in ognuno."
+
+#: src/components/common/site-footer.tsx:91
+msgid "Il logbook subacqueo per registrare le immersioni, pianificare la prossima e tenere in ordine attrezzatura e brevetti."
+msgstr "Il logbook subacqueo per registrare le immersioni, pianificare la prossima e tenere in ordine attrezzatura e brevetti."
+
+#: src/pages/landing-page.tsx:71
+msgid "Il tuo logbook subacqueo, sempre con te"
+msgstr "Il tuo logbook subacqueo, sempre con te"
+
+#: src/lib/navigation.ts:24
+msgid "Immersioni"
+msgstr "Immersioni"
+
+#: src/pages/not-found-page.tsx:32
+msgid "Indietro"
+msgstr "Indietro"
+
+#: src/pages/landing-page.tsx:75
+msgid "Inizia ora"
+msgstr "Inizia ora"
+
+#: src/schemas/auth.ts:12
+msgid "Inserisci email o username"
+msgstr "Inserisci email o username"
+
+#: src/schemas/auth.ts:19
+msgid "Inserisci il cognome"
+msgstr "Inserisci il cognome"
+
+#: src/schemas/auth.ts:18
+msgid "Inserisci il nome"
+msgstr "Inserisci il nome"
+
+#: src/schemas/auth.ts:13
+msgid "Inserisci la password"
+msgstr "Inserisci la password"
+
+#: src/pages/landing-page.tsx:41
+msgid "Inventario dell'attrezzatura e cosa hai usato in ogni immersione."
+msgstr "Inventario dell'attrezzatura e cosa hai usato in ogni immersione."
+
+#: src/pages/auth/login-page.tsx:43
+msgid "L'account non è ancora attivo."
+msgstr "L'account non è ancora attivo."
+
+#: src/schemas/auth.ts:31
+msgid "Le password non coincidono"
+msgstr "Le password non coincidono"
+
+#: src/pages/auth/signup-page.tsx:83
+msgid "Lettere, numeri, punto e underscore. I compagni ti troveranno con questo."
+msgstr "Lettere, numeri, punto e underscore. I compagni ti troveranno con questo."
+
+#: src/components/common/user-menu.tsx:89
+msgid "Lingua"
+msgstr "Lingua"
+
+#: src/components/common/site-footer.tsx:94
+msgid "Link del footer"
+msgstr "Link del footer"
+
+#: src/lib/navigation.ts:21
+#: src/pages/landing-page.tsx:20
+msgid "Logbook"
+msgstr "Logbook"
+
+#: src/components/common/ocean-illustration.tsx:18
+msgid "Logbook, pianificazione e attrezzatura in un unico posto."
+msgstr "Logbook, pianificazione e attrezzatura in un unico posto."
+
+#: src/components/auth/password-input.tsx:16
+msgid "Mostra password"
+msgstr "Mostra password"
+
+#: src/components/auth/password-input.tsx:16
+msgid "Nascondi password"
+msgstr "Nascondi password"
+
+#: src/pages/auth/signup-page.tsx:68
+msgid "Nome"
+msgstr "Nome"
+
+#: src/pages/auth/login-page.tsx:69
+msgid "Non hai un account? <0>Registrati</0>"
+msgstr "Non hai un account? <0>Registrati</0>"
+
+#: src/components/common/site-footer.tsx:116
+msgid "Non sostituisce la formazione subacquea né il computer da immersione."
+msgstr "Non sostituisce la formazione subacquea né il computer da immersione."
+
+#: src/pages/landing-page.tsx:21
+msgid "Ogni immersione con profilo, bombole, gas, condizioni e note."
+msgstr "Ogni immersione con profilo, bombole, gas, condizioni e note."
+
+#: src/components/common/ocean-illustration.tsx:17
+msgid "Ogni immersione merita di essere ricordata."
+msgstr "Ogni immersione merita di essere ricordata."
+
+#: src/pages/auth/login-page.tsx:92
+#: src/pages/auth/signup-page.tsx:91
+msgid "Password"
+msgstr "Password"
+
+#: src/pages/auth/login-page.tsx:94
+msgid "Password dimenticata?"
+msgstr "Password dimenticata?"
+
+#: src/lib/navigation.ts:37
+#: src/pages/landing-page.tsx:25
+msgid "Pianificazione"
+msgstr "Pianificazione"
+
+#: src/pages/auth/signup-page.tsx:48
+msgid "Pochi dati e sei pronto a registrare la tua prima immersione."
+msgstr "Pochi dati e sei pronto a registrare la tua prima immersione."
+
+#: src/components/common/user-menu.tsx:67
+msgid "Profilo"
+msgstr "Profilo"
+
+#: src/pages/not-found-page.tsx:20
+msgid "Profondità: 404 m · fuori tabella"
+msgstr "Profondità: 404 m · fuori tabella"
+
+#: src/components/common/site-footer.tsx:44
+msgid "Progetto"
+msgstr "Progetto"
+
+#: src/pages/not-found-page.tsx:23
+msgid "Questa pagina non esiste o è stata spostata. Risali con calma e riparti da un punto sicuro."
+msgstr "Questa pagina non esiste o è stata spostata. Risali con calma e riparti da un punto sicuro."
+
+#: src/pages/landing-page.tsx:72
+msgid "Registra le immersioni, pianifica la prossima e tieni in ordine attrezzatura e brevetti."
+msgstr "Registra le immersioni, pianifica la prossima e tieni in ordine attrezzatura e brevetti."
+
+#: src/components/common/site-footer.tsx:33
+#: src/pages/landing-page.tsx:64
+msgid "Registrati"
+msgstr "Registrati"
+
+#: src/schemas/auth.ts:28
+msgid "Ripeti la password"
+msgstr "Ripeti la password"
+
+#: src/components/common/site-footer.tsx:37
+msgid "Risorse"
+msgstr "Risorse"
+
+#: src/components/common/user-menu.tsx:17
+msgid "Scuro"
+msgstr "Scuro"
+
+#: src/pages/not-found-page.tsx:22
+msgid "Sei sceso troppo a fondo"
+msgstr "Sei sceso troppo a fondo"
+
+#: src/lib/errors.ts:7
+msgid "Server non raggiungibile. Controlla la connessione e riprova."
+msgstr "Server non raggiungibile. Controlla la connessione e riprova."
+
+#: src/components/common/user-menu.tsx:18
+msgid "Sistema"
+msgstr "Sistema"
+
+#: src/lib/navigation.ts:25
+#: src/pages/landing-page.tsx:35
+msgid "Siti"
+msgstr "Siti"
+
+#: src/schemas/auth.ts:25
+msgid "Solo lettere, numeri, punto e underscore"
+msgstr "Solo lettere, numeri, punto e underscore"
+
+#: src/components/common/user-menu.tsx:73
+msgid "Tema"
+msgstr "Tema"
+
+#: src/pages/not-found-page.tsx:27
+msgid "Torna alla home"
+msgstr "Torna alla home"
+
+#: src/lib/errors.ts:13
+msgid "Troppi tentativi: riprova tra {seconds} secondi."
+msgstr "Troppi tentativi: riprova tra {seconds} secondi."
+
+#: src/lib/errors.ts:14
+msgid "Troppi tentativi: riprova tra poco."
+msgstr "Troppi tentativi: riprova tra poco."
+
+#: src/pages/landing-page.tsx:46
+msgid "Tutti i brevetti in un posto, con le foto delle tessere."
+msgstr "Tutti i brevetti in un posto, con le foto delle tessere."
+
+#: src/pages/auth/signup-page.tsx:79
+msgid "Username"
+msgstr "Username"
+
+#: src/pages/auth/signup-page.tsx:40
+msgid "Username già in uso"
+msgstr "Username già in uso"

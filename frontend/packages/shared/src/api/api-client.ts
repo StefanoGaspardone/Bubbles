@@ -24,8 +24,9 @@ export class ApiError extends Error {
 	readonly error: string | null;
 	readonly retryAfterSeconds: number | null;
 
-	constructor(status: number, message: string, error: string | null = null, retryAfterSeconds: number | null = null) {
+	constructor(status: number, message: string, error: string | null = null, retryAfterSeconds: number | null = null,) {
 		super(message);
+
 		this.name = 'ApiError';
 		this.status = status;
 		this.error = error;
@@ -74,11 +75,15 @@ export const toApiError = (error: unknown): ApiError => {
 export interface TokenStore {
 	getAccessToken(): string | null | Promise<string | null>;
 	setAccessToken(token: string | null): void | Promise<void>;
-    getRefreshToken?(): string | null | Promise<string | null>;
+	getRefreshToken?(): string | null | Promise<string | null>;
 	setRefreshToken?(token: string | null): void | Promise<void>;
 }
 
-export const createMemoryTokenStore = (): TokenStore => {
+export interface MemoryTokenStore extends TokenStore {
+	getAccessToken(): string | null;
+}
+
+export const createMemoryTokenStore = (): MemoryTokenStore => {
 	let accessToken: string | null = null;
 
 	return {
@@ -105,23 +110,24 @@ export interface ApiClientConfig {
 	clientType: ClientType;
 	tokenStore: TokenStore;
 	onSessionExpired?: () => void;
+	refreshLock?: <T>(task: () => Promise<T>) => Promise<T>;
 	timeoutMs?: number;
 }
 
 export interface ApiClient {
 	http: AxiosInstance;
-    storeSession(tokens: SessionTokens): Promise<void>;
-    refreshSession(): Promise<string>;
-    restoreSession(): Promise<boolean>;
-    logout(): Promise<void>;
-    clearSession(): Promise<void>;
+	storeSession(tokens: SessionTokens): Promise<void>;
+	refreshSession(): Promise<string>;
+	restoreSession(): Promise<boolean>;
+	logout(): Promise<void>;
+	clearSession(): Promise<void>;
 }
 
 const isAuthEndpoint = (url: string | undefined): boolean =>
 	url !== undefined && /^\/?auth\//.test(url);
 
 export const createApiClient = (config: ApiClientConfig): ApiClient => {
-	const { baseUrl, clientType, tokenStore, onSessionExpired, timeoutMs = 15_000 } = config;
+	const { baseUrl, clientType, tokenStore, onSessionExpired, refreshLock, timeoutMs = 15_000 } = config;
 	const isWeb = clientType === 'WEB';
 
 	const defaults = {
@@ -132,7 +138,7 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
 	}
 
 	const http = axios.create(defaults);
-    const authHttp = axios.create(defaults);
+	const authHttp = axios.create(defaults);
 
 	// ---------------------------------------------------------------------------
 	// Session
@@ -185,7 +191,7 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
 	let refreshPromise: Promise<string> | null = null;
 
 	const refreshSession = (): Promise<string> => {
-		refreshPromise ??= performRefresh().finally(() => {
+		refreshPromise ??= (refreshLock ? refreshLock(performRefresh) : performRefresh()).finally(() => {
 			refreshPromise = null;
 		});
 
@@ -211,7 +217,7 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
 				await authHttp.post('/auth/logout', body);
 			}
 		} catch {
-			// swallow catch
+			// swallow
 		} finally {
 			await clearSession();
 		}
@@ -224,6 +230,7 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
 	http.interceptors.request.use(async (requestConfig) => {
 		if(!requestConfig.headers.has('Authorization')) {
 			const accessToken = await tokenStore.getAccessToken();
+			
 			if(accessToken) {
 				requestConfig.headers.set('Authorization', `Bearer ${accessToken}`);
 			}
@@ -278,6 +285,10 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
 		clearSession,
 	}
 }
+
+// =============================================================================
+// Instance
+// =============================================================================
 
 let currentClient: ApiClient | null = null;
 

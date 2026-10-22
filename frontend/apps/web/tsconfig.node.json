@@ -16,6 +16,8 @@
 		"noFallthroughCasesInSwitch": true
 	},
 	"include": [
-		"vite.config.ts"
+		"vite.config.ts",
+		"lingui.config.ts",
+		"scripts"
 	]
 }
