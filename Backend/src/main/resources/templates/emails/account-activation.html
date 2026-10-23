@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{emails/layout :: body(title='Attiva il tuo account', preheader=|Il tuo codice di attivazione è ${otpCode}|, content=~{::#main-content})}">
+<head>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<div id="main-content">
+    <h1 style="margin: 0 0 12px 0; color: #0b1c2a; font-size: 22px; font-weight: 700; line-height: 1.3; text-align: center;">
+        Benvenuto a bordo!
+    </h1>
+    <p style="margin: 0 0 24px 0; color: #516676; font-size: 15px; line-height: 1.6; text-align: center;">
+        Manca solo un passo: inserisci questo codice nella pagina di attivazione per confermare la tua email e iniziare a registrare le tue immersioni.
+    </p>
+
+    <th:block th:replace="~{emails/components :: otp(code=${otpCode}, minutes=${expiresInMinutes})}" />
+</div>
+</body>
+</html>

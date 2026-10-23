@@ -65,7 +65,7 @@ export const toApiError = (error: unknown): ApiError => {
 		return new ApiError(response.status, error.message, response.statusText || null, retryAfterSeconds);
 	}
 
-	return new ApiError(0, error instanceof Error ? error.message : 'Unknown error');
+	return new ApiError(-1, error instanceof Error ? error.message : 'Unknown error');
 }
 
 // =============================================================================

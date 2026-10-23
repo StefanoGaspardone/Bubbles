@@ -28,7 +28,7 @@ spring:
           auth: ${SMTP_AUTH:false}
           starttls:
             enable: ${SMTP_STARTTLS:false}
-    from-address: ${MAIL_FROM_ADDRESS:no-reply@fetchly.com}
+    from-address: ${MAIL_FROM_ADDRESS:no-reply@bubbles.com}
     from-name: Bubbles
 
 # ============================================================

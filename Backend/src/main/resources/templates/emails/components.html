@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--/* Blocchi riutilizzabili delle email. */-->
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--/*
+    Codice monouso con la scadenza e l'avviso di sicurezza.
+    Uso: <th:block th:replace="~{emails/components :: otp(code=${otpCode}, minutes=${expiresInMinutes})}" />
+*/-->
+<th:block th:fragment="otp(code, minutes)">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 0 0 20px 0;">
+        <tr>
+            <td align="center" style="background-color: #e0f2f7; border: 1px solid #c6e3ec; border-radius: 12px; padding: 22px 16px;">
+                <div style="margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #516676;">
+                    Il tuo codice
+                </div>
+                <div th:text="${code}"
+                     style="font-family: 'SFMono-Regular', Menlo, Consolas, 'Courier New', monospace; font-size: 36px; font-weight: 700; letter-spacing: 10px; color: #006599; padding-left: 10px;">
+                    123456
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <p style="margin: 0 0 8px 0; color: #516676; font-size: 13px; line-height: 1.6; text-align: center;">
+        Il codice scade tra <strong style="color: #0b1c2a;" th:text="${minutes}">10</strong> minuti.
+    </p>
+    <p style="margin: 0; color: #516676; font-size: 13px; line-height: 1.6; text-align: center;">
+        Non condividerlo con nessuno: Bubbles non te lo chiederà mai.
+    </p>
+</th:block>
+
+</body>
+</html>

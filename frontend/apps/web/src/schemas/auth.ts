@@ -2,6 +2,9 @@ import { t } from '@lingui/core/macro';
 import { z } from 'zod';
 
 const USERNAME_PATTERN = /^[a-zA-Z0-9._]+$/;
+const OTP_PATTERN = /^\d{6}$/;
+
+const identifier = z.string().trim().min(1, { error: () => t`Inserisci email o username` });
 
 const password = z
 	.string()
@@ -9,7 +12,7 @@ const password = z
 	.max(72, { error: () => t`Al massimo 72 caratteri` });
 
 export const loginSchema = z.object({
-	identifier: z.string().trim().min(1, { error: () => t`Inserisci email o username` }),
+	identifier,
 	password: z.string().min(1, { error: () => t`Inserisci la password` }),
 });
 
@@ -32,5 +35,11 @@ export const signupSchema = z
 		path: ['confirmPassword'],
 	});
 
+export const activateSchema = z.object({
+	identifier,
+	otpCode: z.string().regex(OTP_PATTERN, { error: () => t`Inserisci il codice di 6 cifre` }),
+});
+
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type SignupFormValues = z.infer<typeof signupSchema>;
+export type ActivateFormValues = z.infer<typeof activateSchema>;

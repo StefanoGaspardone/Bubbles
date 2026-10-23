@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, CircleCheckIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 import { toApiError } from '@frontend/shared';
 
@@ -16,6 +16,8 @@ import { Input } from '@/components/ui/input';
 
 import { useAuth } from '@/contexts/auth-context';
 
+import type { ActivatedLoginState } from '@/pages/auth/activate-page';
+
 import { loginSchema, type LoginFormValues } from '@/schemas/auth';
 
 import { errorMessage } from '@/lib/errors';
@@ -25,10 +27,15 @@ const ACCOUNT_NOT_ACTIVATED = 'Account is not activated';
 const LoginPage = () => {
 	const { t } = useLingui();
 	const { login } = useAuth();
+	const location = useLocation();
 
-	const { register, handleSubmit, getValues, setError, formState: { errors, isSubmitting } } = useForm<LoginFormValues>({
+	const activatedState = location.state as Partial<ActivatedLoginState> | null;
+	const justActivated = activatedState?.activated === true;
+
+	const { register, handleSubmit, getValues, setError, formState: { errors, isSubmitting, isValid } } = useForm<LoginFormValues>({
 		resolver: zodResolver(loginSchema),
-		defaultValues: { identifier: '', password: '' },
+		mode: 'onTouched',
+		defaultValues: { identifier: activatedState?.identifier ?? '', password: '' },
 	});
 
 	const onSubmit = async (values: LoginFormValues): Promise<void> => {
@@ -76,6 +83,12 @@ const LoginPage = () => {
 		>
 			<form onSubmit = { handleSubmit(onSubmit) } noValidate>
 				<FieldGroup>
+					{justActivated && !rootError && (
+						<Alert role = 'status' className = 'border-success/30 text-success'>
+							<CircleCheckIcon/>
+							<AlertDescription className = 'text-success'><Trans>Account attivato! Ora puoi accedere.</Trans></AlertDescription>
+						</Alert>
+					)}
 					{rootError && (
 						<Alert variant = 'destructive'>
 							<AlertCircleIcon/>
@@ -84,7 +97,7 @@ const LoginPage = () => {
 					)}
 					<Field data-invalid = { !!errors.identifier }>
 						<FieldLabel htmlFor = 'identifier'><Trans>Email o username</Trans></FieldLabel>
-						<Input id = 'identifier' autoComplete = 'username' autoFocus aria-invalid = { !!errors.identifier } {...register('identifier')}/>
+						<Input id = 'identifier' autoComplete = 'username' autoFocus = { !justActivated } aria-invalid = { !!errors.identifier } {...register('identifier')}/>
 						<FieldError errors = { [errors.identifier] }/>
 					</Field>
 					<Field data-invalid = { !!errors.password }>
@@ -94,11 +107,11 @@ const LoginPage = () => {
 								<Trans>Password dimenticata?</Trans>
 							</Link>
 						</div>
-						<PasswordInput id = 'password' autoComplete = 'current-password' aria-invalid = { !!errors.password } {...register('password')}/>
+						<PasswordInput id = 'password' autoComplete = 'current-password' autoFocus = { justActivated } aria-invalid = { !!errors.password } {...register('password')}/>
 						<FieldError errors = { [errors.password] }/>
 					</Field>
-					<Button type = 'submit' className = 'w-full' disabled = { isSubmitting }>
-						{isSubmitting ? <Trans>Accesso in corso…</Trans> : <Trans>Accedi</Trans>}
+					<Button type = 'submit' className = 'w-full cursor-pointer' disabled = { !isValid || isSubmitting }>
+						{isSubmitting ? <Trans>Accesso in corso...</Trans> : <Trans>Accedi</Trans>}
 					</Button>
 				</FieldGroup>
 			</form>

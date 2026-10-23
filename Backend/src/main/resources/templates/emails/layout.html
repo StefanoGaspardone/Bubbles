@@ -1,58 +1,80 @@
 <!DOCTYPE html>
+<!--/*
+    Layout comune delle email di Bubbles.
+
+    Uso:
+        th:replace="~{emails/layout :: body(title='Titolo', preheader='Anteprima', content=~{::#main-content})}"
+
+    - title: titolo della scheda/finestra del client di posta
+    - preheader: testo di anteprima mostrato dai client accanto all'oggetto (nascosto nel corpo)
+    - content: il contenuto della singola email
+
+    Colori: palette del sito convertita in esadecimale (i client di posta non supportano oklch).
+        primario #006599 · testo #0b1c2a · testo secondario #516676 · bordo #d2e1e7
+        sfondo #eaf4f8 · superficie chiara #f6fbfd · gradiente header #25aabe → #00547b → #03172c
+*/-->
 <html lang="it"
       xmlns:th="http://www.thymeleaf.org"
-      th:fragment="body(content)">
+      th:fragment="body(title, preheader, content)">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${emailTitle != null} ? |${emailTitle} - Let's Table| : |Let's Table|">Let's Table</title>
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <title th:text="${title != null} ? |${title} · Bubbles| : 'Bubbles'">Bubbles</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f8f6f3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+<body style="margin: 0; padding: 0; background-color: #eaf4f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
 
-<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8f6f3; padding: 32px 16px;">
+<!-- Anteprima mostrata dai client accanto all'oggetto, invisibile nel corpo -->
+<div th:if="${preheader != null}"
+     th:text="${preheader}"
+     style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all; font-size: 1px; line-height: 1px; color: #eaf4f8;">
+    Anteprima
+</div>
+
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #eaf4f8; padding: 32px 16px;">
     <tr>
         <td align="center">
 
-            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e9e4dc; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 520px; background-color: #ffffff; border-radius: 16px; border: 1px solid #d2e1e7; overflow: hidden; box-shadow: 0 8px 24px rgba(3, 23, 44, 0.06);">
 
-                <!-- Header Logo -->
+                <!-- Header: dalla superficie al blu profondo, come l'illustrazione del sito -->
                 <tr>
-                    <td align="center" style="padding: 32px 32px 16px 32px; background-color: #ffffff;">
-                        <img src="https://vostra-cdn.com/lets-table-icon.png"
-                             alt="Let's Table"
-                             width="64"
-                             height="64"
-                             style="display: block; width: 64px; height: 64px; border-radius: 16px; border: 0;" />
-                        <div style="margin-top: 12px; font-size: 14px; font-weight: 700; color: #b84929; letter-spacing: 0.5px; text-transform: uppercase;">
-                            Let's Table
+                    <td align="center" bgcolor="#00547b" style="padding: 32px 32px 28px 32px; background-color: #00547b; background-image: linear-gradient(180deg, #25aabe 0%, #00547b 65%, #03172c 100%);">
+                        <div style="font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #ffffff;">
+                            Bubbles
+                        </div>
+                        <div style="margin-top: 6px; font-size: 13px; color: #c6f2f4;">
+                            Il tuo logbook subacqueo
                         </div>
                     </td>
                 </tr>
 
-                <!-- Content -->
+                <!-- Contenuto della singola email -->
                 <tr>
-                    <td style="padding: 0 32px 32px 32px;">
+                    <td style="padding: 32px 32px 28px 32px;">
                         <th:block th:replace="${content}" />
                     </td>
                 </tr>
 
-                <!-- Footer -->
+                <!-- Avvertenza -->
                 <tr>
-                    <td align="center" style="padding: 20px 32px; background-color: #fcfbf9; border-top: 1px solid #f0ebe1;">
-                        <p style="margin: 0; color: #8c827a; font-size: 12px; line-height: 1.5; text-align: center;">
-                            Questa è un'email automatica inviata da <strong>Let's Table</strong>.<br />
-                            Se non hai effettuato tu questa richiesta, puoi ignorare questo messaggio.
+                    <td align="center" style="padding: 20px 32px; background-color: #f6fbfd; border-top: 1px solid #d2e1e7;">
+                        <p style="margin: 0; color: #516676; font-size: 12px; line-height: 1.6; text-align: center;">
+                            Questa è un'email automatica di <strong style="color: #0b1c2a;">Bubbles</strong>: non rispondere a questo indirizzo.<br />
+                            Se non hai fatto tu questa richiesta, puoi ignorarla in tutta sicurezza.
                         </p>
                     </td>
                 </tr>
 
             </table>
 
-            <!-- Copyright Footer -->
-            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px; margin-top: 16px;">
+            <!-- Copyright -->
+            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 520px; margin-top: 16px;">
                 <tr>
-                    <td align="center" style="color: #a39990; font-size: 12px;">
-                        &copy; Let's Table. Tutti i diritti riservati.
+                    <td align="center" style="color: #516676; font-size: 12px; line-height: 1.5;">
+                        <span th:text="|© ${#dates.year(#dates.createNow())} Bubbles|">© 2026 Bubbles</span>
+                        &middot; Non sostituisce la formazione subacquea né il computer da immersione.
                     </td>
                 </tr>
             </table>

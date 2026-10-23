@@ -4,6 +4,8 @@ import { t } from '@lingui/core/macro';
 export const errorMessage = (error: unknown): string => {
 	const apiError = toApiError(error);
 
+	if(import.meta.env.DEV) console.error('[api]', apiError, error);
+
 	if(apiError.isNetworkError) return t`Server non raggiungibile. Controlla la connessione e riprova.`;
 
 	if(apiError.status === 429) {

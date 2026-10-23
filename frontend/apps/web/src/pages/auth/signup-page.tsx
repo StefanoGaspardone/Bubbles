@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, CheckIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 
@@ -21,10 +21,16 @@ const SignupPage = () => {
 	const { t } = useLingui();
 	const navigate = useNavigate();
 
-	const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<SignupFormValues>({
+	const { register, handleSubmit, setError, watch, formState: { errors, isSubmitting, isValid } } = useForm<SignupFormValues>({
 		resolver: zodResolver(signupSchema),
+		mode: 'onTouched',
 		defaultValues: { firstName: '', lastName: '', username: '', email: '', password: '', confirmPassword: '' },
 	});
+
+	const password = watch('password');
+	const confirmPassword = watch('confirmPassword');
+	const showMatch = confirmPassword.length > 0;
+	const passwordsMatch = password === confirmPassword;
 
 	const onSubmit = async ({ firstName, lastName, username, email, password }: SignupFormValues): Promise<void> => {
 		try {
@@ -32,6 +38,8 @@ const SignupPage = () => {
 
 			await navigate(`/activate?identifier=${encodeURIComponent(response.email)}`, { replace: true });
 		} catch(error) {
+			if(import.meta.env.DEV) console.error('[signup]', error);
+
 			const apiError = toApiError(error);
 
 			if(apiError.status === 409 && apiError.message.startsWith('Email')) {
@@ -39,7 +47,7 @@ const SignupPage = () => {
 			} else if(apiError.status === 409 && apiError.message.startsWith('Username')) {
 				setError('username', { message: t`Username già in uso` }, { shouldFocus: true });
 			} else {
-				setError('root', { message: errorMessage(apiError) });
+				setError('root', { message: errorMessage(error) });
 			}
 		}
 	}
@@ -94,13 +102,21 @@ const SignupPage = () => {
 							? <FieldError errors = { [errors.password] }/>
 							: <FieldDescription><Trans>Almeno 8 caratteri.</Trans></FieldDescription>}
 					</Field>
-					<Field data-invalid = { !!errors.confirmPassword }>
+					<Field data-invalid = { showMatch ? !passwordsMatch : !!errors.confirmPassword }>
 						<FieldLabel htmlFor = 'confirmPassword'><Trans>Conferma password</Trans></FieldLabel>
-						<PasswordInput id = 'confirmPassword' autoComplete = 'new-password' aria-invalid = { !!errors.confirmPassword } {...register('confirmPassword')}/>
-						<FieldError errors = { [errors.confirmPassword] }/>
+						<PasswordInput id = 'confirmPassword' autoComplete = 'new-password' aria-invalid = { showMatch ? !passwordsMatch : !!errors.confirmPassword } aria-describedby = 'confirmPassword-match' {...register('confirmPassword')}/>
+						{showMatch
+							? (
+								<p id = 'confirmPassword-match' aria-live = 'polite' className = { passwordsMatch ? 'flex items-center gap-1.5 text-sm text-success' : 'flex items-center gap-1.5 text-sm text-destructive' }>
+									{passwordsMatch
+										? <><CheckIcon className = 'size-4' aria-hidden = 'true'/><Trans>Le password coincidono</Trans></>
+										: <><XIcon className = 'size-4' aria-hidden = 'true'/><Trans>Le password non coincidono</Trans></>}
+								</p>
+							)
+							: <FieldError errors = { [errors.confirmPassword] }/>}
 					</Field>
-					<Button type = 'submit' className = 'w-full' disabled = { isSubmitting }>
-						{isSubmitting ? <Trans>Creazione account…</Trans> : <Trans>Crea account</Trans>}
+					<Button type = 'submit' className = 'w-full cursor-pointer' disabled = { !isValid || isSubmitting }>
+						{isSubmitting ? <Trans>Creazione account...</Trans> : <Trans>Crea account</Trans>}
 					</Button>
 				</FieldGroup>
 			</form>

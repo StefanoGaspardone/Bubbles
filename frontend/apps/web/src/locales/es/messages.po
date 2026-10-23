@@ -7,51 +7,60 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: es\n"
 
-#: src/components/common/site-footer.tsx:62
+#: src/components/common/site-footer.tsx:63
 msgid "(si apre in una nuova scheda)"
 msgstr "(se abre en una pestaña nueva)"
 
-#: src/components/common/site-footer.tsx:111
+#: src/components/common/site-footer.tsx:113
 msgid "© {year} Bubbles · Realizzato da <0>{AUTHOR}</0>"
 msgstr "© {year} Bubbles · Creado por <0>{AUTHOR}</0>"
 
-#: src/components/common/site-footer.tsx:32
-#: src/pages/auth/login-page.tsx:101
+#: src/components/common/site-footer.tsx:33
+#: src/pages/auth/activate-page.tsx:123
+#: src/pages/auth/login-page.tsx:113
 #: src/pages/landing-page.tsx:61
 msgid "Accedi"
 msgstr "Iniciar sesión"
 
-#: src/pages/auth/login-page.tsx:67
+#: src/pages/auth/login-page.tsx:73
 msgid "Accedi per ritrovare il tuo logbook."
 msgstr "Inicia sesión para volver a tu bitácora."
 
-#: src/pages/auth/login-page.tsx:101
+#: src/pages/auth/login-page.tsx:113
 msgid "Accesso in corso…"
 msgstr "Iniciando sesión…"
+
+#: src/pages/auth/login-page.tsx:88
+msgid "Account attivato! Ora puoi accedere."
+msgstr "¡Cuenta activada! Ya puedes iniciar sesión."
+
+#: src/pages/auth/activate-page.tsx:142
+msgid "Account già attivo? <0>Accedi</0>"
+msgstr "¿Cuenta ya activa? <0>Inicia sesión</0>"
 
 #: src/pages/landing-page.tsx:31
 msgid "Aggiungi i compagni di immersione e fai confermare l'immersione con un QR code."
 msgstr "Añade a tus compañeros de buceo y pídeles que confirmen la inmersión con un código QR."
 
-#: src/schemas/auth.ts:26
+#: src/schemas/auth.ts:29
 msgid "Al massimo 255 caratteri"
 msgstr "Máximo 255 caracteres"
 
-#: src/schemas/auth.ts:18
-#: src/schemas/auth.ts:19
-#: src/schemas/auth.ts:24
+#: src/schemas/auth.ts:21
+#: src/schemas/auth.ts:22
+#: src/schemas/auth.ts:27
 msgid "Al massimo 50 caratteri"
 msgstr "Máximo 50 caracteres"
 
-#: src/schemas/auth.ts:9
+#: src/schemas/auth.ts:12
 msgid "Al massimo 72 caratteri"
 msgstr "Máximo 72 caracteres"
 
-#: src/schemas/auth.ts:23
+#: src/schemas/auth.ts:26
 msgid "Almeno 3 caratteri"
 msgstr "Mínimo 3 caracteres"
 
-#: src/schemas/auth.ts:8
+#: src/schemas/auth.ts:11
 msgid "Almeno 8 caratteri"
 msgstr "Mínimo 8 caracteres"
 
@@ -59,20 +68,32 @@ msgstr "Mínimo 8 caracteres"
 msgid "Almeno 8 caratteri."
 msgstr "Mínimo 8 caracteres."
 
-#: src/components/common/site-footer.tsx:30
+#: src/components/common/site-footer.tsx:31
 msgid "App"
 msgstr "App"
 
-#: src/pages/auth/login-page.tsx:60
+#: src/pages/auth/activate-page.tsx:191
+msgid "Attiva account"
+msgstr "Activar cuenta"
+
+#: src/pages/auth/activate-page.tsx:135
+msgid "Attiva il tuo account"
+msgstr "Activa tu cuenta"
+
+#: src/pages/auth/login-page.tsx:66
 msgid "Attivalo con il codice ricevuto via email"
 msgstr "Actívala con el código que recibiste por correo"
+
+#: src/pages/auth/activate-page.tsx:191
+msgid "Attivazione in corso…"
+msgstr "Activando…"
 
 #: src/lib/navigation.ts:32
 #: src/pages/landing-page.tsx:40
 msgid "Attrezzatura"
 msgstr "Equipo"
 
-#: src/pages/auth/login-page.tsx:67
+#: src/pages/auth/login-page.tsx:73
 msgid "Bentornato"
 msgstr "Bienvenido de nuevo"
 
@@ -88,6 +109,14 @@ msgstr "Planificación con las tablas FIPSAS/DAN y el modelo Bühlmann."
 #: src/components/common/user-menu.tsx:16
 msgid "Chiaro"
 msgstr "Claro"
+
+#: src/pages/auth/activate-page.tsx:172
+msgid "Codice di verifica"
+msgstr "Código de verificación"
+
+#: src/pages/auth/activate-page.tsx:65
+msgid "Codice non valido. Controlla l'email e riprova."
+msgstr "Código no válido. Revisa el correo e inténtalo de nuevo."
 
 #: src/pages/auth/signup-page.tsx:73
 msgid "Cognome"
@@ -122,15 +151,20 @@ msgstr "Correo electrónico"
 msgid "Email già registrata"
 msgstr "Correo ya registrado"
 
-#: src/schemas/auth.ts:26
+#: src/schemas/auth.ts:29
 msgid "Email non valida"
 msgstr "Correo no válido"
 
-#: src/pages/auth/login-page.tsx:86
+#: src/pages/auth/activate-page.tsx:166
+#: src/pages/auth/login-page.tsx:98
 msgid "Email o username"
 msgstr "Correo o nombre de usuario"
 
-#: src/pages/auth/login-page.tsx:41
+#: src/pages/auth/activate-page.tsx:199
+msgid "Email sbagliata? Modificala"
+msgstr "¿Correo incorrecto? Cámbialo"
+
+#: src/pages/auth/login-page.tsx:47
 msgid "Email, username o password non corretti."
 msgstr "Correo, nombre de usuario o contraseña incorrectos."
 
@@ -162,7 +196,11 @@ msgstr "Inicio"
 msgid "I tuoi punti di immersione, con le immersioni fatte in ognuno."
 msgstr "Tus puntos de inmersión, con las inmersiones que hiciste en cada uno."
 
-#: src/components/common/site-footer.tsx:91
+#: src/pages/auth/activate-page.tsx:68
+msgid "Il codice è scaduto: richiedine uno nuovo."
+msgstr "El código ha caducado: solicita uno nuevo."
+
+#: src/components/common/site-footer.tsx:92
 msgid "Il logbook subacqueo per registrare le immersioni, pianificare la prossima e tenere in ordine attrezzatura e brevetti."
 msgstr "La bitácora de buceo para registrar tus inmersiones, planificar la próxima y tener en orden tu equipo y tus titulaciones."
 
@@ -182,31 +220,43 @@ msgstr "Atrás"
 msgid "Inizia ora"
 msgstr "Empieza ahora"
 
-#: src/schemas/auth.ts:12
+#: src/schemas/auth.ts:7
 msgid "Inserisci email o username"
 msgstr "Introduce tu correo o nombre de usuario"
 
-#: src/schemas/auth.ts:19
+#: src/schemas/auth.ts:40
+msgid "Inserisci il codice di 6 cifre"
+msgstr "Introduce el código de 6 dígitos"
+
+#: src/schemas/auth.ts:22
 msgid "Inserisci il cognome"
 msgstr "Introduce tus apellidos"
 
-#: src/schemas/auth.ts:18
+#: src/schemas/auth.ts:21
 msgid "Inserisci il nome"
 msgstr "Introduce tu nombre"
 
-#: src/schemas/auth.ts:13
+#: src/schemas/auth.ts:16
 msgid "Inserisci la password"
 msgstr "Introduce tu contraseña"
+
+#: src/pages/auth/activate-page.tsx:138
+msgid "Inserisci la tua email o username e il codice di 6 cifre che ti abbiamo inviato."
+msgstr "Introduce tu correo o nombre de usuario y el código de 6 dígitos que te enviamos."
 
 #: src/pages/landing-page.tsx:41
 msgid "Inventario dell'attrezzatura e cosa hai usato in ogni immersione."
 msgstr "El inventario de tu equipo y lo que usaste en cada inmersión."
 
-#: src/pages/auth/login-page.tsx:43
+#: src/pages/auth/activate-page.tsx:131
+msgid "Invio in corso…"
+msgstr "Enviando…"
+
+#: src/pages/auth/login-page.tsx:49
 msgid "L'account non è ancora attivo."
 msgstr "Tu cuenta aún no está activada."
 
-#: src/schemas/auth.ts:31
+#: src/schemas/auth.ts:34
 msgid "Le password non coincidono"
 msgstr "Las contraseñas no coinciden"
 
@@ -214,11 +264,12 @@ msgstr "Las contraseñas no coinciden"
 msgid "Lettere, numeri, punto e underscore. I compagni ti troveranno con questo."
 msgstr "Letras, números, punto y guion bajo. Tus compañeros te encontrarán con él."
 
+#: src/components/common/language-switcher.tsx:26
 #: src/components/common/user-menu.tsx:89
 msgid "Lingua"
 msgstr "Idioma"
 
-#: src/components/common/site-footer.tsx:94
+#: src/components/common/site-footer.tsx:96
 msgid "Link del footer"
 msgstr "Enlaces del pie de página"
 
@@ -239,15 +290,24 @@ msgstr "Mostrar contraseña"
 msgid "Nascondi password"
 msgstr "Ocultar contraseña"
 
+#: src/pages/auth/activate-page.tsx:74
+#: src/pages/auth/activate-page.tsx:106
+msgid "Nessun account da attivare con questa email o username."
+msgstr "No hay ninguna cuenta por activar con este correo o nombre de usuario."
+
 #: src/pages/auth/signup-page.tsx:68
 msgid "Nome"
 msgstr "Nombre"
 
-#: src/pages/auth/login-page.tsx:69
+#: src/pages/auth/activate-page.tsx:130
+msgid "Non hai ricevuto il codice? Invialo di nuovo"
+msgstr "¿No recibiste el código? Envíalo de nuevo"
+
+#: src/pages/auth/login-page.tsx:75
 msgid "Non hai un account? <0>Registrati</0>"
 msgstr "¿No tienes cuenta? <0>Regístrate</0>"
 
-#: src/components/common/site-footer.tsx:116
+#: src/components/common/site-footer.tsx:118
 msgid "Non sostituisce la formazione subacquea né il computer da immersione."
 msgstr "No sustituye a la formación de buceo ni al ordenador de buceo."
 
@@ -259,12 +319,12 @@ msgstr "Cada inmersión con perfil, botellas, gas, condiciones y notas."
 msgid "Ogni immersione merita di essere ricordata."
 msgstr "Cada inmersión merece ser recordada."
 
-#: src/pages/auth/login-page.tsx:92
+#: src/pages/auth/login-page.tsx:104
 #: src/pages/auth/signup-page.tsx:91
 msgid "Password"
 msgstr "Contraseña"
 
-#: src/pages/auth/login-page.tsx:94
+#: src/pages/auth/login-page.tsx:106
 msgid "Password dimenticata?"
 msgstr "¿Olvidaste tu contraseña?"
 
@@ -285,28 +345,36 @@ msgstr "Perfil"
 msgid "Profondità: 404 m · fuori tabella"
 msgstr "Profundidad: 404 m · fuera de tabla"
 
-#: src/components/common/site-footer.tsx:44
+#: src/components/common/site-footer.tsx:45
 msgid "Progetto"
 msgstr "Proyecto"
+
+#: src/pages/auth/activate-page.tsx:132
+msgid "Puoi richiedere un nuovo codice tra {seconds} s"
+msgstr "Podrás solicitar un nuevo código en {seconds} s"
 
 #: src/pages/not-found-page.tsx:23
 msgid "Questa pagina non esiste o è stata spostata. Risali con calma e riparti da un punto sicuro."
 msgstr "Esta página no existe o se ha movido. Asciende con calma y vuelve a empezar desde un punto seguro."
 
+#: src/pages/auth/activate-page.tsx:76
+msgid "Questo account è già attivo."
+msgstr "Esta cuenta ya está activa."
+
 #: src/pages/landing-page.tsx:72
 msgid "Registra le immersioni, pianifica la prossima e tieni in ordine attrezzatura e brevetti."
 msgstr "Registra tus inmersiones, planifica la próxima y mantén en orden tu equipo y tus titulaciones."
 
-#: src/components/common/site-footer.tsx:33
+#: src/components/common/site-footer.tsx:34
 #: src/pages/landing-page.tsx:64
 msgid "Registrati"
 msgstr "Regístrate"
 
-#: src/schemas/auth.ts:28
+#: src/schemas/auth.ts:31
 msgid "Ripeti la password"
 msgstr "Repite la contraseña"
 
-#: src/components/common/site-footer.tsx:37
+#: src/components/common/site-footer.tsx:38
 msgid "Risorse"
 msgstr "Recursos"
 
@@ -331,7 +399,7 @@ msgstr "Sistema"
 msgid "Siti"
 msgstr "Puntos de inmersión"
 
-#: src/schemas/auth.ts:25
+#: src/schemas/auth.ts:28
 msgid "Solo lettere, numeri, punto e underscore"
 msgstr "Solo letras, números, punto y guion bajo"
 
@@ -339,9 +407,21 @@ msgstr "Solo letras, números, punto y guion bajo"
 msgid "Tema"
 msgstr "Tema"
 
+#: src/pages/auth/activate-page.tsx:139
+msgid "Ti abbiamo inviato un codice di 6 cifre a <0>{initialIdentifier}</0>. Inseriscilo qui sotto per attivare l'account."
+msgstr "Te enviamos un código de 6 dígitos a <0>{initialIdentifier}</0>. Introdúcelo abajo para activar tu cuenta."
+
+#: src/pages/auth/activate-page.tsx:97
+msgid "Ti abbiamo inviato un nuovo codice."
+msgstr "Te enviamos un código nuevo."
+
 #: src/pages/not-found-page.tsx:27
 msgid "Torna alla home"
 msgstr "Volver al inicio"
+
+#: src/pages/auth/activate-page.tsx:71
+msgid "Troppi tentativi sbagliati: richiedi un nuovo codice."
+msgstr "Demasiados intentos fallidos: solicita un nuevo código."
 
 #: src/lib/errors.ts:13
 msgid "Troppi tentativi: riprova tra {seconds} secondi."

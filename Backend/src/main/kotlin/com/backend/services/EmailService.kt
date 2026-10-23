@@ -34,7 +34,7 @@ class EmailService(
             setVariable("expiresInMinutes", expiresInMinutes)
         }
 
-        send(to = to, subject = "Activation Code - Bubbles", template = "emails/otp", context = context)
+        send(to = to, subject = "Activation Code - Bubbles", template = "emails/account-activation", context = context)
     }
 
     @Async

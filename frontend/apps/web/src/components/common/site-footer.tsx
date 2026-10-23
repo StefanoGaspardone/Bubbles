@@ -5,6 +5,7 @@ import { ExternalLinkIcon, WavesIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 import Bubbles from '@/components/common/bubbles';
+import LanguageSwitcher from '@/components/common/language-switcher';
 
 import { cn } from '@/lib/utils';
 
@@ -90,6 +91,7 @@ const SiteFooter = ({ className }: SiteFooterProps) => {
                         <p className = 'text-sm text-white/70 text-pretty'>
                             <Trans>Il logbook subacqueo per registrare le immersioni, pianificare la prossima e tenere in ordine attrezzatura e brevetti.</Trans>
                         </p>
+                        <LanguageSwitcher side = 'top' align = 'start' className = '-ml-3 self-start text-white/70 hover:bg-white/10 hover:text-white focus-visible:text-white aria-expanded:bg-white/10 aria-expanded:text-white'/>
                     </div>
                     <nav aria-label = { t`Link del footer` } className = 'grid grid-cols-2 gap-8 sm:grid-cols-3'>
                         {COLUMNS.map(column => (
