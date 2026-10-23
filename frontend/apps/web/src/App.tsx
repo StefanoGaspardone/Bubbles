@@ -8,6 +8,8 @@ import AppLayout from '@/components/layout/app-layout';
 import LoginPage from '@/pages/auth/login-page';
 import ActivatePage from '@/pages/auth/activate-page';
 import SignupPage from '@/pages/auth/signup-page';
+import ForgotPasswordPage from '@/pages/auth/forgot-password-page';
+import ResetPasswordPage from '@/pages/auth/reset-password-page';
 import NotFoundPage from '@/pages/not-found-page';
 import LandingPage from '@/pages/landing-page';
 import HomePage from '@/pages/home-page';
@@ -21,6 +23,8 @@ const App = () => {
 					<Route path = '/login' element = { <LoginPage/> }/>
 					<Route path = '/signup' element = { <SignupPage/> }/>
 					<Route path = '/activate' element = { <ActivatePage/> }/>
+					<Route path = '/forgot-password' element = { <ForgotPasswordPage/> }/>
+					<Route path = '/reset-password' element = { <ResetPasswordPage/> }/>
 				</Route>
 				<Route element = { <ProtectedRoute landing = { <LandingPage/> }/> }>
 					<Route element = { <AppLayout/> }>

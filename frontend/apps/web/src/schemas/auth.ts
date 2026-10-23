@@ -6,10 +6,14 @@ const OTP_PATTERN = /^\d{6}$/;
 
 const identifier = z.string().trim().min(1, { error: () => t`Inserisci email o username` });
 
+const otpCode = z.string().regex(OTP_PATTERN, { error: () => t`Inserisci il codice di 6 cifre` });
+
 const password = z
 	.string()
 	.min(8, { error: () => t`Almeno 8 caratteri` })
 	.max(72, { error: () => t`Al massimo 72 caratteri` });
+
+const confirmPassword = z.string().min(1, { error: () => t`Ripeti la password` });
 
 export const loginSchema = z.object({
 	identifier,
@@ -28,7 +32,7 @@ export const signupSchema = z
 			.regex(USERNAME_PATTERN, { error: () => t`Solo lettere, numeri, punto e underscore` }),
 		email: z.string().trim().pipe(z.email({ error: () => t`Email non valida` }).max(255, { error: () => t`Al massimo 255 caratteri` })),
 		password,
-		confirmPassword: z.string().min(1, { error: () => t`Ripeti la password` }),
+		confirmPassword,
 	})
 	.refine((values) => values.password === values.confirmPassword, {
 		error: () => t`Le password non coincidono`,
@@ -37,9 +41,27 @@ export const signupSchema = z
 
 export const activateSchema = z.object({
 	identifier,
-	otpCode: z.string().regex(OTP_PATTERN, { error: () => t`Inserisci il codice di 6 cifre` }),
+	otpCode,
 });
+
+export const forgotPasswordSchema = z.object({
+	identifier,
+});
+
+export const resetPasswordSchema = z
+	.object({
+		identifier,
+		otpCode,
+		newPassword: password,
+		confirmPassword,
+	})
+	.refine((values) => values.newPassword === values.confirmPassword, {
+		error: () => t`Le password non coincidono`,
+		path: ['confirmPassword'],
+	});
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type SignupFormValues = z.infer<typeof signupSchema>;
 export type ActivateFormValues = z.infer<typeof activateSchema>;
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

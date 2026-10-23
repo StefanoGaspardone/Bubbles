@@ -7,60 +7,51 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: de\n"
 
-#: src/components/common/site-footer.tsx:63
+#: src/components/common/site-footer.tsx:62
 msgid "(si apre in una nuova scheda)"
 msgstr "(öffnet in einem neuen Tab)"
 
-#: src/components/common/site-footer.tsx:113
+#: src/components/common/site-footer.tsx:111
 msgid "© {year} Bubbles · Realizzato da <0>{AUTHOR}</0>"
 msgstr "© {year} Bubbles · Erstellt von <0>{AUTHOR}</0>"
 
-#: src/components/common/site-footer.tsx:33
-#: src/pages/auth/activate-page.tsx:123
-#: src/pages/auth/login-page.tsx:113
+#: src/components/common/site-footer.tsx:32
+#: src/pages/auth/login-page.tsx:101
 #: src/pages/landing-page.tsx:61
 msgid "Accedi"
 msgstr "Anmelden"
 
-#: src/pages/auth/login-page.tsx:73
+#: src/pages/auth/login-page.tsx:67
 msgid "Accedi per ritrovare il tuo logbook."
 msgstr "Melde dich an, um zu deinem Logbuch zurückzukehren."
 
-#: src/pages/auth/login-page.tsx:113
+#: src/pages/auth/login-page.tsx:101
 msgid "Accesso in corso…"
 msgstr "Anmeldung läuft…"
-
-#: src/pages/auth/login-page.tsx:88
-msgid "Account attivato! Ora puoi accedere."
-msgstr "Konto aktiviert! Du kannst dich jetzt anmelden."
-
-#: src/pages/auth/activate-page.tsx:142
-msgid "Account già attivo? <0>Accedi</0>"
-msgstr "Konto schon aktiv? <0>Anmelden</0>"
 
 #: src/pages/landing-page.tsx:31
 msgid "Aggiungi i compagni di immersione e fai confermare l'immersione con un QR code."
 msgstr "Füge deine Tauchpartner hinzu und lass sie den Tauchgang per QR-Code bestätigen."
 
-#: src/schemas/auth.ts:29
+#: src/schemas/auth.ts:26
 msgid "Al massimo 255 caratteri"
 msgstr "Höchstens 255 Zeichen"
 
-#: src/schemas/auth.ts:21
-#: src/schemas/auth.ts:22
-#: src/schemas/auth.ts:27
+#: src/schemas/auth.ts:18
+#: src/schemas/auth.ts:19
+#: src/schemas/auth.ts:24
 msgid "Al massimo 50 caratteri"
 msgstr "Höchstens 50 Zeichen"
 
-#: src/schemas/auth.ts:12
+#: src/schemas/auth.ts:9
 msgid "Al massimo 72 caratteri"
 msgstr "Höchstens 72 Zeichen"
 
-#: src/schemas/auth.ts:26
+#: src/schemas/auth.ts:23
 msgid "Almeno 3 caratteri"
 msgstr "Mindestens 3 Zeichen"
 
-#: src/schemas/auth.ts:11
+#: src/schemas/auth.ts:8
 msgid "Almeno 8 caratteri"
 msgstr "Mindestens 8 Zeichen"
 
@@ -68,32 +59,20 @@ msgstr "Mindestens 8 Zeichen"
 msgid "Almeno 8 caratteri."
 msgstr "Mindestens 8 Zeichen."
 
-#: src/components/common/site-footer.tsx:31
+#: src/components/common/site-footer.tsx:30
 msgid "App"
 msgstr "App"
 
-#: src/pages/auth/activate-page.tsx:191
-msgid "Attiva account"
-msgstr "Konto aktivieren"
-
-#: src/pages/auth/activate-page.tsx:135
-msgid "Attiva il tuo account"
-msgstr "Aktiviere dein Konto"
-
-#: src/pages/auth/login-page.tsx:66
+#: src/pages/auth/login-page.tsx:60
 msgid "Attivalo con il codice ricevuto via email"
 msgstr "Aktiviere es mit dem Code aus der E-Mail"
-
-#: src/pages/auth/activate-page.tsx:191
-msgid "Attivazione in corso…"
-msgstr "Wird aktiviert…"
 
 #: src/lib/navigation.ts:32
 #: src/pages/landing-page.tsx:40
 msgid "Attrezzatura"
 msgstr "Ausrüstung"
 
-#: src/pages/auth/login-page.tsx:73
+#: src/pages/auth/login-page.tsx:67
 msgid "Bentornato"
 msgstr "Willkommen zurück"
 
@@ -109,14 +88,6 @@ msgstr "Planung mit den FIPSAS/DAN-Tabellen und dem Bühlmann-Modell."
 #: src/components/common/user-menu.tsx:16
 msgid "Chiaro"
 msgstr "Hell"
-
-#: src/pages/auth/activate-page.tsx:172
-msgid "Codice di verifica"
-msgstr "Bestätigungscode"
-
-#: src/pages/auth/activate-page.tsx:65
-msgid "Codice non valido. Controlla l'email e riprova."
-msgstr "Ungültiger Code. Prüfe die E-Mail und versuche es erneut."
 
 #: src/pages/auth/signup-page.tsx:73
 msgid "Cognome"
@@ -151,20 +122,15 @@ msgstr "E-Mail"
 msgid "Email già registrata"
 msgstr "E-Mail bereits registriert"
 
-#: src/schemas/auth.ts:29
+#: src/schemas/auth.ts:26
 msgid "Email non valida"
 msgstr "Ungültige E-Mail-Adresse"
 
-#: src/pages/auth/activate-page.tsx:166
-#: src/pages/auth/login-page.tsx:98
+#: src/pages/auth/login-page.tsx:86
 msgid "Email o username"
 msgstr "E-Mail oder Benutzername"
 
-#: src/pages/auth/activate-page.tsx:199
-msgid "Email sbagliata? Modificala"
-msgstr "Falsche E-Mail? Ändere sie"
-
-#: src/pages/auth/login-page.tsx:47
+#: src/pages/auth/login-page.tsx:41
 msgid "Email, username o password non corretti."
 msgstr "E-Mail, Benutzername oder Passwort falsch."
 
@@ -196,11 +162,7 @@ msgstr "Startseite"
 msgid "I tuoi punti di immersione, con le immersioni fatte in ognuno."
 msgstr "Deine Tauchplätze, mit den Tauchgängen an jedem davon."
 
-#: src/pages/auth/activate-page.tsx:68
-msgid "Il codice è scaduto: richiedine uno nuovo."
-msgstr "Der Code ist abgelaufen: Fordere einen neuen an."
-
-#: src/components/common/site-footer.tsx:92
+#: src/components/common/site-footer.tsx:91
 msgid "Il logbook subacqueo per registrare le immersioni, pianificare la prossima e tenere in ordine attrezzatura e brevetti."
 msgstr "Das Tauchlogbuch, um deine Tauchgänge festzuhalten, den nächsten zu planen und Ausrüstung und Brevets in Ordnung zu halten."
 
@@ -220,43 +182,31 @@ msgstr "Zurück"
 msgid "Inizia ora"
 msgstr "Jetzt starten"
 
-#: src/schemas/auth.ts:7
+#: src/schemas/auth.ts:12
 msgid "Inserisci email o username"
 msgstr "Gib deine E-Mail oder deinen Benutzernamen ein"
 
-#: src/schemas/auth.ts:40
-msgid "Inserisci il codice di 6 cifre"
-msgstr "Gib den 6-stelligen Code ein"
-
-#: src/schemas/auth.ts:22
+#: src/schemas/auth.ts:19
 msgid "Inserisci il cognome"
 msgstr "Gib deinen Nachnamen ein"
 
-#: src/schemas/auth.ts:21
+#: src/schemas/auth.ts:18
 msgid "Inserisci il nome"
 msgstr "Gib deinen Vornamen ein"
 
-#: src/schemas/auth.ts:16
+#: src/schemas/auth.ts:13
 msgid "Inserisci la password"
 msgstr "Gib dein Passwort ein"
-
-#: src/pages/auth/activate-page.tsx:138
-msgid "Inserisci la tua email o username e il codice di 6 cifre che ti abbiamo inviato."
-msgstr "Gib deine E-Mail oder deinen Benutzernamen und den 6-stelligen Code ein, den wir dir geschickt haben."
 
 #: src/pages/landing-page.tsx:41
 msgid "Inventario dell'attrezzatura e cosa hai usato in ogni immersione."
 msgstr "Deine Ausrüstung im Überblick und was du bei jedem Tauchgang benutzt hast."
 
-#: src/pages/auth/activate-page.tsx:131
-msgid "Invio in corso…"
-msgstr "Wird gesendet…"
-
-#: src/pages/auth/login-page.tsx:49
+#: src/pages/auth/login-page.tsx:43
 msgid "L'account non è ancora attivo."
 msgstr "Dein Konto ist noch nicht aktiviert."
 
-#: src/schemas/auth.ts:34
+#: src/schemas/auth.ts:31
 msgid "Le password non coincidono"
 msgstr "Die Passwörter stimmen nicht überein"
 
@@ -264,12 +214,11 @@ msgstr "Die Passwörter stimmen nicht überein"
 msgid "Lettere, numeri, punto e underscore. I compagni ti troveranno con questo."
 msgstr "Buchstaben, Zahlen, Punkt und Unterstrich. Darüber finden dich deine Tauchpartner."
 
-#: src/components/common/language-switcher.tsx:26
 #: src/components/common/user-menu.tsx:89
 msgid "Lingua"
 msgstr "Sprache"
 
-#: src/components/common/site-footer.tsx:96
+#: src/components/common/site-footer.tsx:94
 msgid "Link del footer"
 msgstr "Footer-Links"
 
@@ -290,24 +239,15 @@ msgstr "Passwort anzeigen"
 msgid "Nascondi password"
 msgstr "Passwort verbergen"
 
-#: src/pages/auth/activate-page.tsx:74
-#: src/pages/auth/activate-page.tsx:106
-msgid "Nessun account da attivare con questa email o username."
-msgstr "Kein zu aktivierendes Konto mit dieser E-Mail oder diesem Benutzernamen."
-
 #: src/pages/auth/signup-page.tsx:68
 msgid "Nome"
 msgstr "Vorname"
 
-#: src/pages/auth/activate-page.tsx:130
-msgid "Non hai ricevuto il codice? Invialo di nuovo"
-msgstr "Keinen Code erhalten? Erneut senden"
-
-#: src/pages/auth/login-page.tsx:75
+#: src/pages/auth/login-page.tsx:69
 msgid "Non hai un account? <0>Registrati</0>"
 msgstr "Noch kein Konto? <0>Registrieren</0>"
 
-#: src/components/common/site-footer.tsx:118
+#: src/components/common/site-footer.tsx:116
 msgid "Non sostituisce la formazione subacquea né il computer da immersione."
 msgstr "Ersetzt weder eine Tauchausbildung noch einen Tauchcomputer."
 
@@ -319,12 +259,12 @@ msgstr "Jeder Tauchgang mit Profil, Flaschen, Gas, Bedingungen und Notizen."
 msgid "Ogni immersione merita di essere ricordata."
 msgstr "Jeder Tauchgang verdient es, in Erinnerung zu bleiben."
 
-#: src/pages/auth/login-page.tsx:104
+#: src/pages/auth/login-page.tsx:92
 #: src/pages/auth/signup-page.tsx:91
 msgid "Password"
 msgstr "Passwort"
 
-#: src/pages/auth/login-page.tsx:106
+#: src/pages/auth/login-page.tsx:94
 msgid "Password dimenticata?"
 msgstr "Passwort vergessen?"
 
@@ -345,36 +285,28 @@ msgstr "Profil"
 msgid "Profondità: 404 m · fuori tabella"
 msgstr "Tiefe: 404 m · außerhalb der Tabelle"
 
-#: src/components/common/site-footer.tsx:45
+#: src/components/common/site-footer.tsx:44
 msgid "Progetto"
 msgstr "Projekt"
-
-#: src/pages/auth/activate-page.tsx:132
-msgid "Puoi richiedere un nuovo codice tra {seconds} s"
-msgstr "Du kannst in {seconds} s einen neuen Code anfordern"
 
 #: src/pages/not-found-page.tsx:23
 msgid "Questa pagina non esiste o è stata spostata. Risali con calma e riparti da un punto sicuro."
 msgstr "Diese Seite gibt es nicht oder sie wurde verschoben. Steig langsam auf und starte von einem sicheren Punkt neu."
 
-#: src/pages/auth/activate-page.tsx:76
-msgid "Questo account è già attivo."
-msgstr "Dieses Konto ist bereits aktiv."
-
 #: src/pages/landing-page.tsx:72
 msgid "Registra le immersioni, pianifica la prossima e tieni in ordine attrezzatura e brevetti."
 msgstr "Halte deine Tauchgänge fest, plane den nächsten und halte Ausrüstung und Brevets in Ordnung."
 
-#: src/components/common/site-footer.tsx:34
+#: src/components/common/site-footer.tsx:33
 #: src/pages/landing-page.tsx:64
 msgid "Registrati"
 msgstr "Registrieren"
 
-#: src/schemas/auth.ts:31
+#: src/schemas/auth.ts:28
 msgid "Ripeti la password"
 msgstr "Wiederhole das Passwort"
 
-#: src/components/common/site-footer.tsx:38
+#: src/components/common/site-footer.tsx:37
 msgid "Risorse"
 msgstr "Ressourcen"
 
@@ -399,7 +331,7 @@ msgstr "System"
 msgid "Siti"
 msgstr "Tauchplätze"
 
-#: src/schemas/auth.ts:28
+#: src/schemas/auth.ts:25
 msgid "Solo lettere, numeri, punto e underscore"
 msgstr "Nur Buchstaben, Zahlen, Punkt und Unterstrich"
 
@@ -407,21 +339,9 @@ msgstr "Nur Buchstaben, Zahlen, Punkt und Unterstrich"
 msgid "Tema"
 msgstr "Design"
 
-#: src/pages/auth/activate-page.tsx:139
-msgid "Ti abbiamo inviato un codice di 6 cifre a <0>{initialIdentifier}</0>. Inseriscilo qui sotto per attivare l'account."
-msgstr "Wir haben dir einen 6-stelligen Code an <0>{initialIdentifier}</0> geschickt. Gib ihn unten ein, um dein Konto zu aktivieren."
-
-#: src/pages/auth/activate-page.tsx:97
-msgid "Ti abbiamo inviato un nuovo codice."
-msgstr "Wir haben dir einen neuen Code geschickt."
-
 #: src/pages/not-found-page.tsx:27
 msgid "Torna alla home"
 msgstr "Zur Startseite"
-
-#: src/pages/auth/activate-page.tsx:71
-msgid "Troppi tentativi sbagliati: richiedi un nuovo codice."
-msgstr "Zu viele Fehlversuche: Fordere einen neuen Code an."
 
 #: src/lib/errors.ts:13
 msgid "Troppi tentativi: riprova tra {seconds} secondi."
@@ -442,3 +362,102 @@ msgstr "Benutzername"
 #: src/pages/auth/signup-page.tsx:40
 msgid "Username già in uso"
 msgstr "Benutzername bereits vergeben"
+
+msgid "Account attivato! Ora puoi accedere."
+msgstr "Konto aktiviert! Du kannst dich jetzt anmelden."
+
+msgid "Account già attivo? <0>Accedi</0>"
+msgstr "Konto schon aktiv? <0>Anmelden</0>"
+
+msgid "Attiva account"
+msgstr "Konto aktivieren"
+
+msgid "Attiva il tuo account"
+msgstr "Aktiviere dein Konto"
+
+msgid "Attivazione in corso…"
+msgstr "Wird aktiviert…"
+
+msgid "Codice di verifica"
+msgstr "Bestätigungscode"
+
+msgid "Codice non valido. Controlla l'email e riprova."
+msgstr "Ungültiger Code. Prüfe die E-Mail und versuche es erneut."
+
+msgid "Email sbagliata? Modificala"
+msgstr "Falsche E-Mail? Ändere sie"
+
+msgid "Il codice è scaduto: richiedine uno nuovo."
+msgstr "Der Code ist abgelaufen: Fordere einen neuen an."
+
+msgid "Inserisci il codice di 6 cifre"
+msgstr "Gib den 6-stelligen Code ein"
+
+msgid "Inserisci la tua email o username e il codice di 6 cifre che ti abbiamo inviato."
+msgstr "Gib deine E-Mail oder deinen Benutzernamen und den 6-stelligen Code ein, den wir dir geschickt haben."
+
+msgid "Invio in corso…"
+msgstr "Wird gesendet…"
+
+msgid "Nessun account da attivare con questa email o username."
+msgstr "Kein zu aktivierendes Konto mit dieser E-Mail oder diesem Benutzernamen."
+
+msgid "Non hai ricevuto il codice? Invialo di nuovo"
+msgstr "Keinen Code erhalten? Erneut senden"
+
+msgid "Puoi richiedere un nuovo codice tra {seconds} s"
+msgstr "Du kannst in {seconds} s einen neuen Code anfordern"
+
+msgid "Questo account è già attivo."
+msgstr "Dieses Konto ist bereits aktiv."
+
+msgid "Ti abbiamo inviato un codice di 6 cifre a <0>{initialIdentifier}</0>. Inseriscilo qui sotto per attivare l'account."
+msgstr "Wir haben dir einen 6-stelligen Code an <0>{initialIdentifier}</0> geschickt. Gib ihn unten ein, um dein Konto zu aktivieren."
+
+msgid "Ti abbiamo inviato un nuovo codice."
+msgstr "Wir haben dir einen neuen Code geschickt."
+
+msgid "Troppi tentativi sbagliati: richiedi un nuovo codice."
+msgstr "Zu viele Fehlversuche: Fordere einen neuen Code an."
+
+msgid "Le password coincidono"
+msgstr "Die Passwörter stimmen überein"
+
+msgid "Inserisci la tua email o username, il codice di 6 cifre ricevuto e la nuova password."
+msgstr "Gib deine E-Mail oder deinen Benutzernamen, den erhaltenen 6-stelligen Code und dein neues Passwort ein."
+
+msgid "Inviami il codice"
+msgstr "Code senden"
+
+msgid "Nessun problema: ti mandiamo via email un codice per sceglierne una nuova."
+msgstr "Kein Problem: Wir schicken dir per E-Mail einen Code, um ein neues festzulegen."
+
+msgid "Nessuna richiesta di reset attiva per questo account: richiedi un nuovo codice."
+msgstr "Für dieses Konto läuft keine Passwortzurücksetzung: Fordere einen neuen Code an."
+
+msgid "Nuova password"
+msgstr "Neues Passwort"
+
+msgid "Password aggiornata! Accedi con la nuova password."
+msgstr "Passwort aktualisiert! Melde dich mit dem neuen Passwort an."
+
+msgid "Quelli che usi per accedere."
+msgstr "Die du zum Anmelden verwendest."
+
+msgid "Reimposta la password"
+msgstr "Passwort zurücksetzen"
+
+msgid "Salva la nuova password"
+msgstr "Neues Passwort speichern"
+
+msgid "Salvataggio in corso…"
+msgstr "Wird gespeichert…"
+
+msgid "Se esiste un account con questi dati, ti abbiamo inviato un nuovo codice."
+msgstr "Falls ein Konto mit diesen Angaben existiert, haben wir dir einen neuen Code geschickt."
+
+msgid "Se esiste un account per <0>{initialIdentifier}</0>, ti abbiamo inviato un codice di 6 cifre. Inseriscilo e scegli la nuova password."
+msgstr "Falls ein Konto für <0>{initialIdentifier}</0> existiert, haben wir dir einen 6-stelligen Code geschickt. Gib ihn ein und wähle dein neues Passwort."
+
+msgid "Ti è tornata in mente? <0>Accedi</0>"
+msgstr "Doch wieder eingefallen? <0>Anmelden</0>"

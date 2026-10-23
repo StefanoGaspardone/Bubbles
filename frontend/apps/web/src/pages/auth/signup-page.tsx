@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { AlertCircleIcon, CheckIcon, XIcon } from 'lucide-react';
+import { AlertCircleIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 
@@ -8,6 +8,7 @@ import { signup, toApiError } from '@frontend/shared';
 
 import AuthPageLayout from '@/components/layout/auth-page-layout';
 import PasswordInput from '@/components/auth/password-input';
+import PasswordMatchHint from '@/components/auth/password-match-hint';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
@@ -38,8 +39,6 @@ const SignupPage = () => {
 
 			await navigate(`/activate?identifier=${encodeURIComponent(response.email)}`, { replace: true });
 		} catch(error) {
-			if(import.meta.env.DEV) console.error('[signup]', error);
-
 			const apiError = toApiError(error);
 
 			if(apiError.status === 409 && apiError.message.startsWith('Email')) {
@@ -47,7 +46,7 @@ const SignupPage = () => {
 			} else if(apiError.status === 409 && apiError.message.startsWith('Username')) {
 				setError('username', { message: t`Username già in uso` }, { shouldFocus: true });
 			} else {
-				setError('root', { message: errorMessage(error) });
+				setError('root', { message: errorMessage(apiError) });
 			}
 		}
 	}
@@ -106,17 +105,11 @@ const SignupPage = () => {
 						<FieldLabel htmlFor = 'confirmPassword'><Trans>Conferma password</Trans></FieldLabel>
 						<PasswordInput id = 'confirmPassword' autoComplete = 'new-password' aria-invalid = { showMatch ? !passwordsMatch : !!errors.confirmPassword } aria-describedby = 'confirmPassword-match' {...register('confirmPassword')}/>
 						{showMatch
-							? (
-								<p id = 'confirmPassword-match' aria-live = 'polite' className = { passwordsMatch ? 'flex items-center gap-1.5 text-sm text-success' : 'flex items-center gap-1.5 text-sm text-destructive' }>
-									{passwordsMatch
-										? <><CheckIcon className = 'size-4' aria-hidden = 'true'/><Trans>Le password coincidono</Trans></>
-										: <><XIcon className = 'size-4' aria-hidden = 'true'/><Trans>Le password non coincidono</Trans></>}
-								</p>
-							)
+							? <PasswordMatchHint id = 'confirmPassword-match' matches = { passwordsMatch }/>
 							: <FieldError errors = { [errors.confirmPassword] }/>}
 					</Field>
-					<Button type = 'submit' className = 'w-full cursor-pointer' disabled = { !isValid || isSubmitting }>
-						{isSubmitting ? <Trans>Creazione account...</Trans> : <Trans>Crea account</Trans>}
+					<Button type = 'submit' className = 'w-full' disabled = { !isValid || isSubmitting }>
+						{isSubmitting ? <Trans>Creazione account…</Trans> : <Trans>Crea account</Trans>}
 					</Button>
 				</FieldGroup>
 			</form>

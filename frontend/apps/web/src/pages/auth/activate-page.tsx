@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { AlertCircleIcon, MailCheckIcon } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,28 +7,24 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 
 import { activate, resendActivationOtp, toApiError } from '@frontend/shared';
 
+import OtpInput from '@/components/auth/otp-input';
 import AuthPageLayout from '@/components/layout/auth-page-layout';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 
 import { useCountdown } from '@/hooks/use-countdown';
 
 import { activateSchema, type ActivateFormValues } from '@/schemas/auth';
 
 import { errorMessage } from '@/lib/errors';
-import { LOGIN_PATH } from '@/lib/redirect';
+import { LOGIN_PATH, type LoginLocationState } from '@/lib/redirect';
 
 const RESEND_COOLDOWN_SECONDS = 60;
+
 const INVALID_OTP = 'Invalid OTP code';
 const EXPIRED_OTP = 'OTP code expired';
-
-export interface ActivatedLoginState {
-	activated: true;
-	identifier: string;
-}
 
 const ActivatePage = () => {
 	const { t } = useLingui();
@@ -38,7 +33,6 @@ const ActivatePage = () => {
 	const cooldown = useCountdown();
 
 	const initialIdentifier = searchParams.get('identifier') ?? '';
-
 	const [editingIdentifier, setEditingIdentifier] = useState(initialIdentifier === '');
 	const [notice, setNotice] = useState<string | null>(null);
 	const [isResending, setIsResending] = useState(false);
@@ -54,7 +48,7 @@ const ActivatePage = () => {
 		try {
 			await activate(values);
 
-			const state: ActivatedLoginState = { activated: true, identifier: values.identifier };
+			const state: LoginLocationState = { notice: 'activated', identifier: values.identifier };
 			await navigate(LOGIN_PATH, { replace: true, state });
 		} catch(error) {
 			const apiError = toApiError(error);
@@ -171,24 +165,12 @@ const ActivatePage = () => {
 					<Field data-invalid = { !!errors.otpCode }>
 						<FieldLabel htmlFor = 'otpCode'><Trans>Codice di verifica</Trans></FieldLabel>
 						<Controller name = 'otpCode' control = { control } render = { ({ field }) => (
-							<InputOTP id = 'otpCode' maxLength = { 6 } pattern = { REGEXP_ONLY_DIGITS } autoComplete = 'one-time-code' inputMode = 'numeric' autoFocus = { !editingIdentifier } disabled = { isSubmitting } aria-invalid = { !!errors.otpCode } value = { field.value } onChange = { field.onChange } onBlur = { field.onBlur } onComplete = { () => void handleSubmit(onSubmit)() }>
-								<InputOTPGroup>
-									<InputOTPSlot index = { 0 }/>
-									<InputOTPSlot index = { 1 }/>
-									<InputOTPSlot index = { 2 }/>
-								</InputOTPGroup>
-								<InputOTPSeparator/>
-								<InputOTPGroup>
-									<InputOTPSlot index = { 3 }/>
-									<InputOTPSlot index = { 4 }/>
-									<InputOTPSlot index = { 5 }/>
-								</InputOTPGroup>
-							</InputOTP>
+							<OtpInput id = 'otpCode' autoFocus = { !editingIdentifier } disabled = { isSubmitting } aria-invalid = { !!errors.otpCode } value = { field.value } onChange = { field.onChange } onBlur = { field.onBlur } onComplete = { () => void handleSubmit(onSubmit)() }/>
 						) }/>
 						<FieldError errors = { [errors.otpCode] }/>
 					</Field>
 					<Button type = 'submit' className = 'w-full cursor-pointer' disabled = { isSubmitting }>
-						{isSubmitting ? <Trans>Attivazione in corso...</Trans> : <Trans>Attiva account</Trans>}
+						{isSubmitting ? <Trans>Attivazione in corso…</Trans> : <Trans>Attiva account</Trans>}
 					</Button>
 					<div className = 'flex flex-col items-center gap-1 text-sm'>
 						<Button type = 'button' variant = 'link' className = 'h-auto cursor-pointer p-0 text-muted-foreground' disabled = { isResending || cooldown.isRunning } onClick = { () => void handleResend() }>
